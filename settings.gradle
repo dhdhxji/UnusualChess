@@ -1,0 +1,2 @@
+include ':unusualChess'
+rootProject.name = "Unusual chess"
