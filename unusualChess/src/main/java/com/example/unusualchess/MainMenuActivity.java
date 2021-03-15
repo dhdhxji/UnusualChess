@@ -98,7 +98,7 @@ public class MainMenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_fullscreen);
+        setContentView(R.layout.main_menu_activity);
 
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
