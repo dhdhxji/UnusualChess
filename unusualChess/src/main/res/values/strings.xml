@@ -1,5 +1,4 @@
 <resources>
     <string name="app_name">Unusual chess</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="btn_main_menu_start_game">Play</string>
 </resources>
