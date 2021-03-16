@@ -33,7 +33,7 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        Intent chActivity = new Intent(this, ChessBattleActivity.class);
+        Intent chActivity = new Intent(this, NewGameSettings.class);
 
         startActivity(chActivity);
     }

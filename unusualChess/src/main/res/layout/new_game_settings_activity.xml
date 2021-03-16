@@ -20,7 +20,7 @@
             android:id="@+id/new_game_settings_easy_sel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:checked="1"
+            android:checked="true"
             android:text="@string/lbl_acticity_new_game_settings_difficulty_easy"
             android:textColor="@color/clr_default_text" />
 
@@ -70,7 +70,7 @@
             android:id="@+id/new_game_settings_white_sel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:checked="1"
+            android:checked="true"
             android:text="@string/lbl_activity_new_game_settings_difficulty_clr_white"
             android:textColor="@color/clr_default_text" />
 
