@@ -2,4 +2,12 @@
     <string name="app_name">Unusual chess</string>
     <string name="btn_main_menu_start_game">Play</string>
     <string name="lbl_chess_battle_history_title">History</string>
+    <string name="lbl_activity_new_game_settings_difficulty_title">Difficulty</string>
+    <string name="lbl_acticity_new_game_settings_difficulty_easy">Easy</string>
+    <string name="lbl_acticity_new_game_settings_difficulty_medium">Medium</string>
+    <string name="lbl_acticity_new_game_settings_difficulty_hard">Hard</string>
+    <string name="lbl_activity_new_game_settings_difficulty_clr_title">White or black</string>
+    <string name="lbl_activity_new_game_settings_difficulty_clr_white">White</string>
+    <string name="lbl_activity_new_game_settings_difficulty_clr_black">Black</string>
+    <string name="lbl_new_game_settings_start_btn">Start</string>
 </resources>

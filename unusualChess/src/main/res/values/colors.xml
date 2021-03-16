@@ -12,6 +12,7 @@
     <color name="light_blue_A200">#FF40C4FF</color>
     <color name="light_blue_A400">#FF00B0FF</color>
     <color name="black_overlay">#66000000</color>
+    <color name="clr_default_text">#F2F2F2</color>
     <color name="clr_battle_background">#25241E</color>
     <color name="clr_chess_battle_history_title">#F2F2F2</color>
     <color name="clr_chess_battle_history_content">#F2F2F2</color>

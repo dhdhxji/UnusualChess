@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.UnusualChess">
-        <activity android:name=".ChessBattleActivity"></activity>
+        <activity android:name=".NewGameSettings"></activity>
+        <activity android:name=".ChessBattleActivity" />
         <activity
             android:name=".MainMenuActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
