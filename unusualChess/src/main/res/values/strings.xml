@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Unusual chess</string>
     <string name="btn_main_menu_start_game">Play</string>
+    <string name="lbl_chess_battle_history_title">History</string>
 </resources>
