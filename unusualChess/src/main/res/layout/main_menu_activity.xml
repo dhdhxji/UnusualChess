@@ -9,7 +9,7 @@
     tools:context=".MainMenuActivity">
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/main_activity_startGame_btn"
         android:layout_width="139dp"
         android:layout_height="64dp"
         android:layout_marginStart="25dp"
