@@ -13,10 +13,18 @@ public class CellIndex {
         _rank = rank;
     }
 
+    /**
+     * Get file value
+     * @return file value (integer)
+     */
     public int getFile() {
         return _file;
     }
 
+    /**
+     * Get rank value
+     * @return rank value (integer)
+     */
     public int getRank() {
         return _rank;
     }
