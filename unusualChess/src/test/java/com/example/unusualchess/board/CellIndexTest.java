@@ -9,13 +9,15 @@ import static org.junit.Assert.*;
 public class CellIndexTest {
     @Test
     public void correctValues2d() throws InvalidCellIndexException {
-        final int file = 5;
-        final int rank = 5;
+        for(int file = 0; file < CellIndex.BOARD_WIDTH; ++file) {
+            for(int rank = 0; rank < CellIndex.BOARD_WIDTH; ++rank) {
+                CellIndex index = new CellIndex(file, rank);
 
-        CellIndex index = new CellIndex(file, rank);
+                assertEquals("File value is incorrect", index.getFile(), file);
+                assertEquals("Rank value is incorrect", index.getRank(), rank);
+            }
+        }
 
-        assertEquals("File value is incorrect", index.getFile(), file);
-        assertEquals("Rank value is incorrect", index.getRank(), rank);
     }
 
     @Test

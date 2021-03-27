@@ -7,7 +7,7 @@ import com.example.unusualchess.util.InvalidCellIndexException;
 import java.util.Objects;
 
 public class CellIndex {
-    public final int BOARD_WIDTH = 8;
+    public static final int BOARD_WIDTH = 8;
 
     public CellIndex(int file, int rank) throws InvalidCellIndexException {
         _file = file;
@@ -33,8 +33,7 @@ public class CellIndex {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CellIndex cellIndex = (CellIndex) o;
-        return BOARD_WIDTH == cellIndex.BOARD_WIDTH &&
-                _file == cellIndex._file &&
+        return  _file == cellIndex._file &&
                 _rank == cellIndex._rank;
     }
 
