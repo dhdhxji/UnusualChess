@@ -7,15 +7,10 @@ import com.example.unusualchess.util.InvalidCellIndexException;
 import java.util.Objects;
 
 public class CellIndex {
-    public static final int BOARD_WIDTH = 8;
 
-    public CellIndex(int file, int rank) throws InvalidCellIndexException {
+    public CellIndex(int file, int rank){
         _file = file;
         _rank = rank;
-
-        if(_file < 0 || _file >= BOARD_WIDTH || _rank < 0 || rank >= BOARD_WIDTH) {
-            throw new InvalidCellIndexException(this);
-        }
     }
 
     public int getFile() {
@@ -39,14 +34,13 @@ public class CellIndex {
 
     @Override
     public int hashCode() {
-        return Objects.hash(BOARD_WIDTH, _file, _rank);
+        return Objects.hash(_file, _rank);
     }
 
     @NonNull
     @Override
     public String toString() {
         return "CellIndex{" +
-                "BOARD_WIDTH=" + BOARD_WIDTH +
                 ", file=" + _file +
                 ", rank=" + _rank +
                 '}';
