@@ -2,6 +2,8 @@ package com.example.unusualchess.board;
 
 import com.example.unusualchess.common.Role;
 
+import java.util.Set;
+
 public abstract class Piece {
     public enum Type {
         EMPTY,
@@ -18,7 +20,7 @@ public abstract class Piece {
         _role = role;
     }
 
-    abstract public CellIndex[] getAvailableMoves(CellIndex pos, Piece[][] pieces);
+    abstract public Set<CellIndex> getAvailableMoves(CellIndex pos, Piece[][] pieces);
 
     public Type getType() {
         return _type;
