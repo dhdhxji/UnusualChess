@@ -1,7 +1,9 @@
 package com.example.unusualchess.board;
 
+import com.example.unusualchess.common.MoveIntent;
 import com.example.unusualchess.util.ChessInvalidMoveException;
 import com.example.unusualchess.util.InvalidCellIndexException;
+import com.example.unusualchess.util.InvalidPlayerException;
 
 import java.util.Set;
 
@@ -9,14 +11,13 @@ public class ChessModel {
     /**
      * Perform move
      *
-     * @param src source position of piece
-     * @param dest destination position of piece
+     * @param m move intent of player
      *
      * @throws ChessInvalidMoveException if src->dest is impossible move
      * @throws InvalidCellIndexException if src or dst is incorrect cell index
      */
-    public void move(CellIndex src, CellIndex dest)
-            throws ChessInvalidMoveException, InvalidCellIndexException {
+    public void move(MoveIntent m)
+            throws ChessInvalidMoveException, InvalidCellIndexException, InvalidPlayerException {
         //TODO: Implement stub
     }
 
