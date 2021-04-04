@@ -13,6 +13,7 @@ import com.example.unusualchess.util.ChessInvalidMoveException;
 import com.example.unusualchess.util.InvalidCellIndexException;
 import com.example.unusualchess.util.InvalidPlayerException;
 
+import java.util.Observable;
 import java.util.Set;
 
 public class ChessModel {
@@ -45,40 +46,48 @@ public class ChessModel {
      * Reset game, setup initial pieces configuration
      */
     public void reset() {
+        _currentBoardState = getInitialBoardSetup();
+    }
+
+    public static BoardHolder<Piece> getInitialBoardSetup() {
+        BoardHolder<Piece> initial = new BoardHolder<>(BOARD_WIDTH);
+
         //setup pawns
         for(int file = 0; file < BOARD_WIDTH; ++file) {
-            _pieces[1][file] = new Pawn(Role.WHITE);
-            _pieces[BOARD_WIDTH-2][file] = new Pawn(Role.BLACK);
+            initial.set(new CellIndex(1, file), new Pawn(Role.WHITE));
+            initial.set(new CellIndex(BOARD_WIDTH-2, file), new Pawn(Role.BLACK));
         }
 
         //set rook`s
-        _pieces[0][0] = new Rook(Role.WHITE);
-        _pieces[0][BOARD_WIDTH-1] = new Rook(Role.WHITE);
+        initial.set(new CellIndex(0, 0), new Rook(Role.WHITE));
+        initial.set(new CellIndex(0, BOARD_WIDTH-1), new Rook(Role.WHITE));
 
-        _pieces[BOARD_WIDTH-1][0] = new Rook(Role.WHITE);
-        _pieces[BOARD_WIDTH-1][BOARD_WIDTH-1] = new Rook(Role.WHITE);
+        initial.set(new CellIndex(BOARD_WIDTH-1, 0), new Rook(Role.WHITE));
+        initial.set(new CellIndex(BOARD_WIDTH-1, BOARD_WIDTH-1), new Rook(Role.WHITE));
 
         //set knight`s
-        _pieces[0][1] = new Knight(Role.WHITE);
-        _pieces[0][BOARD_WIDTH-2] = new Knight(Role.WHITE);
+        initial.set(new CellIndex(0, 1), new Knight(Role.WHITE));
+        initial.set(new CellIndex(0, BOARD_WIDTH-2), new Knight(Role.WHITE));
 
-        _pieces[BOARD_WIDTH-1][1] = new Bishop(Role.WHITE);
-        _pieces[BOARD_WIDTH-1][BOARD_WIDTH-2] = new Bishop(Role.WHITE);
+        initial.set(new CellIndex(BOARD_WIDTH-1, 1), new Bishop(Role.WHITE));
+        initial.set(new CellIndex(BOARD_WIDTH-1, BOARD_WIDTH-2), new Bishop(Role.WHITE));
 
         //set bishop`s
-        _pieces[0][2] = new Bishop(Role.WHITE);
-        _pieces[0][BOARD_WIDTH-3] = new Bishop(Role.WHITE);
+        initial.set(new CellIndex(0, 2), new Bishop(Role.WHITE));
+        initial.set(new CellIndex(0, BOARD_WIDTH-3), new Bishop(Role.WHITE));
 
-        _pieces[BOARD_WIDTH-1][2] = new Bishop(Role.WHITE);
-        _pieces[BOARD_WIDTH-1][BOARD_WIDTH-3] = new Bishop(Role.WHITE);
+        initial.set(new CellIndex(BOARD_WIDTH-1, 2), new Bishop(Role.WHITE));
+        initial.set(new CellIndex(BOARD_WIDTH-1, BOARD_WIDTH-3), new Bishop(Role.WHITE));
 
         //set queen`s
-        _pieces[0][3] = new Queen(Role.WHITE);
-        _pieces[BOARD_WIDTH-1][3] = new Queen(Role.BLACK);
+        initial.set(new CellIndex(0, 3), new Queen(Role.WHITE));
+        initial.set(new CellIndex(BOARD_WIDTH-1, 3), new Queen(Role.BLACK));
 
         //set kings
-        _pieces[0][3] = new King(Role.WHITE);
-        _pieces[BOARD_WIDTH-1][4] = new King(Role.BLACK);
+        initial.set(new CellIndex(0, 3), new King(Role.WHITE));
+        initial.set(new CellIndex(BOARD_WIDTH-1, 4), new King(Role.BLACK));
+
+        return initial;
     }
 
 
@@ -86,6 +95,5 @@ public class ChessModel {
 
 
     public static final int BOARD_WIDTH = 8;
-
-    private Piece[][] _pieces = new EmptyPiece[BOARD_WIDTH][BOARD_WIDTH];
+    private BoardHolder<Piece> _currentBoardState = new BoardHolder<>(BOARD_WIDTH);
 }
