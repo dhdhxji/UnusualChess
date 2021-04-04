@@ -10,13 +10,14 @@ import com.example.unusualchess.board.pieces.Rook;
 import com.example.unusualchess.common.MoveIntent;
 import com.example.unusualchess.common.Role;
 import com.example.unusualchess.util.ChessInvalidMoveException;
+import com.example.unusualchess.util.ChessModelListenerSupport;
 import com.example.unusualchess.util.InvalidCellIndexException;
 import com.example.unusualchess.util.InvalidPlayerException;
 
 import java.util.Observable;
 import java.util.Set;
 
-public class ChessModel {
+public class ChessModel extends ChessModelListenerSupport {
     /**
      * Perform move
      *
@@ -88,6 +89,14 @@ public class ChessModel {
         initial.set(new CellIndex(BOARD_WIDTH-1, 4), new King(Role.BLACK));
 
         return initial;
+    }
+
+    /**
+     * Get the current game state
+     * @return current game state
+     */
+    public BoardHolder<Piece> getCurrentState() {
+        return _currentBoardState;
     }
 
 
