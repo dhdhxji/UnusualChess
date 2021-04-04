@@ -1,7 +1,6 @@
 package com.example.unusualchess.board;
 
 import com.example.unusualchess.board.pieces.Bishop;
-import com.example.unusualchess.board.pieces.EmptyPiece;
 import com.example.unusualchess.board.pieces.King;
 import com.example.unusualchess.board.pieces.Knight;
 import com.example.unusualchess.board.pieces.Pawn;
@@ -14,7 +13,6 @@ import com.example.unusualchess.util.ChessModelListenerSupport;
 import com.example.unusualchess.util.InvalidCellIndexException;
 import com.example.unusualchess.util.InvalidPlayerException;
 
-import java.util.Observable;
 import java.util.Set;
 
 public class ChessModel extends ChessModelListenerSupport {
