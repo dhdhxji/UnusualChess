@@ -2,20 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:id="@+id/gameBoardView"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/clr_battle_background"
     tools:context=".ChessBattleActivity">
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="411dp"
-        android:layout_height="414dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3"
-        app:srcCompat="@drawable/board_png" />
 
     <Button
         android:id="@+id/button4"
@@ -23,16 +14,17 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="Leave"
-        app:layout_constraintStart_toEndOf="@+id/button3"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintBottom_toBottomOf="@+id/button3"
+        app:layout_constraintStart_toEndOf="@+id/button3" />
 
     <Button
         android:id="@+id/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:text="Switch board"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/battle_menu_board" />
 
     <TextView
         android:id="@+id/textView3"
@@ -42,6 +34,17 @@
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.mfratane.boardview.BoardView
+        android:id="@+id/battle_menu_board"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:darkTileImage="@drawable/black_cell"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        app:lightTileImage="@drawable/white_cell" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
