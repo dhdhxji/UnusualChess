@@ -3,7 +3,7 @@ package com.example.unusualchess.common;
 import com.example.unusualchess.board.CellIndex;
 
 public class MoveIntent {
-    MoveIntent(Role role, CellIndex src, CellIndex dst) {
+    public MoveIntent(Role role, CellIndex src, CellIndex dst) {
         _role = role;
         _srcPos = src;
         _dstPos = dst;
@@ -17,7 +17,7 @@ public class MoveIntent {
         return _srcPos;
     }
 
-    public CellIndex gerDst() {
+    public CellIndex getDst() {
         return _dstPos;
     }
 
