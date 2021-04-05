@@ -9,15 +9,15 @@ public class MoveIntent {
         _dstPos = dst;
     }
 
-    Role getRole() {
+    public Role getRole() {
         return _role;
     }
 
-    CellIndex getSrc() {
+    public CellIndex getSrc() {
         return _srcPos;
     }
 
-    CellIndex gerDst() {
+    public CellIndex gerDst() {
         return _dstPos;
     }
 
