@@ -39,12 +39,17 @@
         android:id="@+id/battle_menu_board"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:clickAnabled="true"
         app:darkTileImage="@drawable/black_cell"
+        app:invalidPosClickColor="@color/clr_invalid_board_tap"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3"
-        app:lightTileImage="@drawable/white_cell" />
+        app:lightTileImage="@drawable/white_cell"
+        app:markedTileColor="@color/clr_marked_tile_color"
+        app:tileMarkingAnimation="SimpleFading"
+        app:tileMarkingEnabled="true" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,4 +16,6 @@
     <color name="clr_battle_background">#25241E</color>
     <color name="clr_chess_battle_history_title">#F2F2F2</color>
     <color name="clr_chess_battle_history_content">#F2F2F2</color>
+    <color name="clr_invalid_board_tap">#FF1010</color>
+    <color name="clr_marked_tile_color">#50AA50</color>
 </resources>
