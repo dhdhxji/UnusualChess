@@ -10,9 +10,12 @@ import com.example.unusualchess.common.MoveIntent;
 import com.example.unusualchess.common.Role;
 import com.example.unusualchess.util.ChessInvalidMoveException;
 import com.example.unusualchess.util.ChessModelListenerSupport;
+import com.example.unusualchess.util.ChessMoveEvent;
 import com.example.unusualchess.util.InvalidCellIndexException;
 import com.example.unusualchess.util.InvalidPlayerException;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 public class ChessModel extends ChessModelListenerSupport {
@@ -23,10 +26,45 @@ public class ChessModel extends ChessModelListenerSupport {
      *
      * @throws ChessInvalidMoveException if src->dest is impossible move
      * @throws InvalidCellIndexException if src or dst is incorrect cell index
+     * @throws InvalidPlayerException if it's not this player's turn
      */
     public void move(MoveIntent m)
             throws ChessInvalidMoveException, InvalidCellIndexException, InvalidPlayerException {
-        //TODO: Implement stub
+        //Check is move possible
+        if(m.getRole() != _currentPlayer) {
+            throw new InvalidPlayerException("Now is " + _currentPlayer + " players`s turn");
+        }
+
+        if( !isCellIndexValid(m.getSrc())) {
+            throw new InvalidCellIndexException(m.getSrc());
+        }
+
+        if( !isCellIndexValid(m.getDst())) {
+            throw new InvalidCellIndexException(m.getDst());
+        }
+
+        //TODO: uncomment check
+        /*Set<CellIndex> availableMoves = getAvailableMoves(m.getSrc());
+        if( !availableMoves.contains(m.getDst()) ) {
+            throw new ChessInvalidMoveException(m.getSrc(), m.getDst());
+        }*/
+
+        //Perform move
+        int moveSeqNumber = getLastMoveNumber();
+        ChessMoveEvent moveEvent = new ChessMoveEvent(m.getSrc(), m.getDst(), moveSeqNumber);
+
+        _moveHistory.add(moveEvent);
+        _currentBoardState.set( m.getDst(), _currentBoardState.get(m.getSrc()) );
+        _currentBoardState.set(m.getSrc(), null);
+
+        movePerformed(moveEvent.getSrc(), moveEvent.getDst(), moveEvent.getSeqNumber());
+
+        //Change next move player
+        if(_currentPlayer == Role.WHITE) {
+            _currentPlayer = Role.BLACK;
+        } else {
+            _currentPlayer = Role.WHITE;
+        }
     }
 
     /**
@@ -97,10 +135,51 @@ public class ChessModel extends ChessModelListenerSupport {
         return _currentBoardState;
     }
 
+    /**
+     * Get the last move sequence number
+     * @return last move sequence number, -1 if there is no movements
+     */
+    public int getLastMoveNumber() {
+        if(_moveHistory.size() == 0) {
+            return -1;
+        }
+
+        return _moveHistory.get(_moveHistory.size()-1).getSeqNumber();
+    }
+
+    /**
+     * Get part of history after certain move sequence number
+     * @param startMoveSeqNumber start sequence number
+     * @return part of history after certain move sequence number
+     */
+    public List<ChessMoveEvent> getMoveHistoryFrom(int startMoveSeqNumber) {
+        //Find start seq number
+        int startIndex = 0;
+        while(startIndex < _moveHistory.size() &&
+                _moveHistory.get(startIndex).getSeqNumber() <= startMoveSeqNumber) {
+            startIndex++;
+        }
+
+        return _moveHistory.subList(startIndex, _moveHistory.size()-1);
+    }
+
+    /**
+     * Check is position valid
+     * @param pos position to validate
+     * @return is position valid
+     */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public boolean isCellIndexValid(CellIndex pos) {
+        return (pos.getFile() < BOARD_WIDTH ) && (pos.getRank() < BOARD_WIDTH) &&
+                (pos.getRank() >= 0) && (pos.getFile() >= 0);
+    }
+
 
 
 
 
     public static final int BOARD_WIDTH = 8;
     private BoardHolder<Piece> _currentBoardState = new BoardHolder<>(BOARD_WIDTH);
+    private List<ChessMoveEvent> _moveHistory = new LinkedList<>();
+    private Role _currentPlayer = Role.WHITE;
 }
