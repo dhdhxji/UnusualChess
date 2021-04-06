@@ -54,11 +54,19 @@ public class ChessBattleUI implements ChessModelListener {
         return res;
     }
 
+    @SuppressWarnings("ConstantConditions")
+    public static int getSpriteId(Piece p) {
+        return pieceSprites.get(p.getRole()).get(p.getType());
+    }
+
+    public static BoardView.Pos fromCellIndex(CellIndex i) {
+        return new BoardView.Pos(ChessModel.BOARD_WIDTH - 1 - i.getRank(), i.getFile());
+    }
+
     public ChessBattleUI(Activity parent, ChessModel model) {
         _view = parent.findViewById(R.id.battle_menu_board);
         model.addListener(this);
 
-        _model = model;
         updateUI(model.getCurrentState());
     }
 
@@ -72,13 +80,14 @@ public class ChessBattleUI implements ChessModelListener {
                 Piece p = board.get(new CellIndex(file, rank));
 
                 if(p != null) {
-                    int spriteId = pieceSprites.get(p.getRole()).get(p.getType());
+                    int spriteId = getSpriteId(p);
                     _view.setPiece(ChessModel.BOARD_WIDTH - 1 - file, rank, spriteId);
                 } else {
                     try {
                         _view.removePiece(file, rank);
                     } catch (NullPointerException e) {
-                        Log.d(TAG, "updateUI: ");
+                        Log.d(TAG, "updateUI: nothing to remove in pos: " +
+                                new CellIndex(file, rank));
                     }
                 }
             }
@@ -87,9 +96,11 @@ public class ChessBattleUI implements ChessModelListener {
 
     @Override
     public void onMove(ChessMoveEvent ev) {
-        //TODO
+        //TODO: Implement move sequence number check
+        BoardView.Pos srcPos = fromCellIndex(ev.getSrc());
+        BoardView.Pos dstPos = fromCellIndex(ev.getDst());
+        _view.movePiece(srcPos, dstPos);
     }
 
-    private ChessModel _model;
-    private BoardView _view;
+    private final BoardView _view;
 }
