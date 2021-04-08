@@ -31,7 +31,7 @@ public class King extends Piece {
     @Override
     public Set<CellIndex> getAvailableMoves(CellIndex pos,
                                             BoardHolder<Piece> board,
-                                            List<ChessMoveEvent> moveHistory) {
+                                            List<ChessMoveEvent<Piece>> moveHistory) {
         //TODO: Implement stub
         return null;
     }

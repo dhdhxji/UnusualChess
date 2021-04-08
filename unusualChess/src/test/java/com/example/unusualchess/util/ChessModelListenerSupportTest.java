@@ -1,22 +1,19 @@
 package com.example.unusualchess.util;
 
 import com.example.unusualchess.board.CellIndex;
-import com.example.unusualchess.board.ChessModel;
 
 import org.junit.Test;
-
-import java.util.List;
 
 import static org.junit.Assert.*;
 
 public class ChessModelListenerSupportTest {
-    class MockEventListener implements ChessModelListener {
+    static class MockEventListener implements ChessModelListener<Integer> {
         @Override
-        public void onMove(ChessMoveEvent ev) {
+        public void onMove(ChessMoveEvent<Integer> ev) {
             lastEvent = ev;
         }
 
-        public ChessMoveEvent lastEvent = null;
+        public ChessMoveEvent<Integer> lastEvent = null;
     }
 
     @Test
@@ -26,14 +23,15 @@ public class ChessModelListenerSupportTest {
 
         t.addListener(l);
 
-        t.movePerformed(null, null, 0);
+        t.movePerformed(new ChessMoveEvent<>(null, null, 0, 0));
 
         assertNull(l.lastEvent.getSrc());
         assertNull(l.lastEvent.getDst());
         assertEquals(0, l.lastEvent.getSeqNumber());
+        assertEquals(0, l.lastEvent.getPiece().intValue());
 
         CellIndex i = new CellIndex(5, 7);
-        t.movePerformed(i, i, 1);
+        t.movePerformed(new ChessMoveEvent<>(i, i, 1, 0));
 
         assertEquals(i, l.lastEvent.getSrc());
         assertEquals(i, l.lastEvent.getDst());
@@ -48,7 +46,7 @@ public class ChessModelListenerSupportTest {
         t.addListener(l);
         t.addListener(l);
 
-        t.movePerformed(null, null, 0);
+        t.movePerformed(new ChessMoveEvent<>(null, null, 0, 0));
 
         assertNull(l.lastEvent.getSrc());
         assertNull(l.lastEvent.getDst());
@@ -63,7 +61,7 @@ public class ChessModelListenerSupportTest {
         t.addListener(l);
         t.removeListener(l);
 
-        t.movePerformed(null, null, 0);
+        t.movePerformed(new ChessMoveEvent<>(null, null, 0, 0));
 
         assertNull(l.lastEvent);
     }

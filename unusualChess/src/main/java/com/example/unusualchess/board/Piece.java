@@ -24,7 +24,7 @@ public abstract class Piece {
 
      abstract public Set<CellIndex> getAvailableMoves(CellIndex pos,
                                                       BoardHolder<Piece> board,
-                                                      List<ChessMoveEvent> moveHistory);
+                                                      List<ChessMoveEvent<Piece>> moveHistory);
 
     public Type getType() {
         return _type;

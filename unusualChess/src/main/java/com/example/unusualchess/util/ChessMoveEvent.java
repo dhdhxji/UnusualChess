@@ -4,8 +4,8 @@ import com.example.unusualchess.board.CellIndex;
 import com.example.unusualchess.board.Piece;
 
 
-public class ChessMoveEvent {
-    public ChessMoveEvent(CellIndex src, CellIndex dst, int seqNumber, Piece piece) {
+public class ChessMoveEvent<T> {
+    public ChessMoveEvent(CellIndex src, CellIndex dst, int seqNumber, T piece) {
        _src = src;
        _dst = dst;
        _seqNumber = seqNumber;
@@ -24,11 +24,11 @@ public class ChessMoveEvent {
         return _seqNumber;
     }
 
-    public Piece getPiece() {
+    public T getPiece() {
         return _piece;
     }
 
-    private Piece _piece;
+    private T _piece;
     private CellIndex _src;
     private CellIndex _dst;
     private int _seqNumber;

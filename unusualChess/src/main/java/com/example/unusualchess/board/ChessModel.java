@@ -51,7 +51,7 @@ public class ChessModel extends ChessModelListenerSupport {
 
         //Perform move
         int moveSeqNumber = getLastMoveNumber();
-        ChessMoveEvent moveEvent = new ChessMoveEvent(m.getSrc(),
+        ChessMoveEvent<Piece> moveEvent = new ChessMoveEvent<>(m.getSrc(),
                 m.getDst(),
                 moveSeqNumber,
                 _currentBoardState.get(m.getSrc()) );
@@ -155,7 +155,7 @@ public class ChessModel extends ChessModelListenerSupport {
      * @param startMoveSeqNumber start sequence number
      * @return part of history after certain move sequence number
      */
-    public List<ChessMoveEvent> getMoveHistoryFrom(int startMoveSeqNumber) {
+    public List<ChessMoveEvent<Piece>> getMoveHistoryFrom(int startMoveSeqNumber) {
         //Find start seq number
         int startIndex = 0;
         while(startIndex < _moveHistory.size() &&
@@ -183,6 +183,6 @@ public class ChessModel extends ChessModelListenerSupport {
 
     public static final int BOARD_WIDTH = 8;
     private BoardHolder<Piece> _currentBoardState = new BoardHolder<>(BOARD_WIDTH);
-    private List<ChessMoveEvent> _moveHistory = new LinkedList<>();
+    private List<ChessMoveEvent<Piece>> _moveHistory = new LinkedList<>();
     private Role _currentPlayer = Role.WHITE;
 }
