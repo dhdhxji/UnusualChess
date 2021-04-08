@@ -1,7 +1,9 @@
 package com.example.unusualchess.board;
 
 import com.example.unusualchess.common.Role;
+import com.example.unusualchess.util.ChessMoveEvent;
 
+import java.util.List;
 import java.util.Set;
 
 public abstract class Piece {
@@ -20,7 +22,9 @@ public abstract class Piece {
         _role = role;
     }
 
-     abstract public Set<CellIndex> getAvailableMoves(CellIndex pos, BoardHolder<Piece> board);
+     abstract public Set<CellIndex> getAvailableMoves(CellIndex pos,
+                                                      BoardHolder<Piece> board,
+                                                      List<ChessMoveEvent> moveHistory);
 
     public Type getType() {
         return _type;
