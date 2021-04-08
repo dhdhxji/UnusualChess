@@ -13,6 +13,11 @@ public class CellIndex {
         _rank = rank;
     }
 
+    public CellIndex(char file, int rank) {
+        _file = Character.toLowerCase(file) - 'a';
+        _rank = rank;
+    }
+
     /**
      * Get file value
      * @return file value (integer)
