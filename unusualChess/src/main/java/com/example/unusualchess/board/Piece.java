@@ -20,7 +20,7 @@ public abstract class Piece {
         _role = role;
     }
 
-    abstract public Set<CellIndex> getAvailableMoves(CellIndex pos, Piece[][] pieces);
+     abstract public Set<CellIndex> getAvailableMoves(CellIndex pos, BoardHolder<Piece> board);
 
     public Type getType() {
         return _type;
@@ -30,6 +30,6 @@ public abstract class Piece {
         return _role;
     }
 
-    private Type _type;
-    private Role _role;
+    private final Type _type;
+    private final Role _role;
 }
