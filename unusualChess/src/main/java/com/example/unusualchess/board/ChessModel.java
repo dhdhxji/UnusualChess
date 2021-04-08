@@ -51,13 +51,16 @@ public class ChessModel extends ChessModelListenerSupport {
 
         //Perform move
         int moveSeqNumber = getLastMoveNumber();
-        ChessMoveEvent moveEvent = new ChessMoveEvent(m.getSrc(), m.getDst(), moveSeqNumber);
+        ChessMoveEvent moveEvent = new ChessMoveEvent(m.getSrc(),
+                m.getDst(),
+                moveSeqNumber,
+                _currentBoardState.get(m.getSrc()) );
 
         _moveHistory.add(moveEvent);
         _currentBoardState.set( m.getDst(), _currentBoardState.get(m.getSrc()) );
         _currentBoardState.set(m.getSrc(), null);
 
-        movePerformed(moveEvent.getSrc(), moveEvent.getDst(), moveEvent.getSeqNumber());
+        movePerformed(moveEvent);
 
         //Change next move player
         if(_currentPlayer == Role.WHITE) {

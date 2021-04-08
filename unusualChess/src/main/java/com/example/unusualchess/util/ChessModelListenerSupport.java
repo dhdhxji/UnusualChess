@@ -1,7 +1,5 @@
 package com.example.unusualchess.util;
 
-import com.example.unusualchess.board.CellIndex;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,13 +26,11 @@ public class ChessModelListenerSupport {
 
     /**
      * Notify listeners about move event
-     * @param srcPos movement source position
-     * @param dstPos movement destination position
-     * @param seqNumber move sequence number
+     * @param ev chess movement event
      */
-    public void movePerformed(CellIndex srcPos, CellIndex dstPos, int seqNumber) {
+    public void movePerformed(ChessMoveEvent ev) {
         for (ChessModelListener l: _listeners) {
-            l.onMove( new ChessMoveEvent(srcPos, dstPos, seqNumber));
+            l.onMove( ev );
         }
     }
 

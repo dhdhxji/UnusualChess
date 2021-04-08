@@ -1,13 +1,15 @@
 package com.example.unusualchess.util;
 
 import com.example.unusualchess.board.CellIndex;
+import com.example.unusualchess.board.Piece;
 
 
 public class ChessMoveEvent {
-    public ChessMoveEvent(CellIndex src, CellIndex dst, int seqNumber) {
+    public ChessMoveEvent(CellIndex src, CellIndex dst, int seqNumber, Piece piece) {
        _src = src;
        _dst = dst;
        _seqNumber = seqNumber;
+       _piece = piece;
     }
 
     public CellIndex getSrc() {
@@ -22,6 +24,11 @@ public class ChessMoveEvent {
         return _seqNumber;
     }
 
+    public Piece getPiece() {
+        return _piece;
+    }
+
+    private Piece _piece;
     private CellIndex _src;
     private CellIndex _dst;
     private int _seqNumber;
