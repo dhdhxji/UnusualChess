@@ -2,8 +2,6 @@ package com.example.unusualchess.board;
 
 import androidx.annotation.NonNull;
 
-import com.example.unusualchess.util.InvalidCellIndexException;
-
 import java.util.Objects;
 
 public class CellIndex {
@@ -36,7 +34,17 @@ public class CellIndex {
         return _rank;
     }
 
-
+    /**
+     * Sum one CellIndex to another (like a vectors)
+     * @param i another CellIndex
+     * @return  sum of CellIndexes
+     */
+    public CellIndex add(CellIndex i) {
+        return new CellIndex(
+                getFile() + i.getFile(),
+                getRank() + i.getRank()
+        );
+    }
 
     @Override
     public boolean equals(Object o) {

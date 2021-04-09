@@ -1,7 +1,5 @@
 package com.example.unusualchess.board;
 
-import com.example.unusualchess.util.InvalidCellIndexException;
-
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -77,5 +75,15 @@ public class CellIndexTest {
                 assertEquals("Rank value is incorrect", rank - 1, index.getRank());
             }
         }
+    }
+
+    @Test
+    public void testSum() {
+        CellIndex a = new CellIndex(1, 2);
+        CellIndex b = new CellIndex(3, 4);
+
+        CellIndex res = a.add(b);
+
+        assertEquals("Sum invalid", new CellIndex(4, 6), res);
     }
 }
