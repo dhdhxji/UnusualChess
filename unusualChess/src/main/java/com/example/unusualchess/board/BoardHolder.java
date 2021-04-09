@@ -53,5 +53,13 @@ public class BoardHolder<T> {
         }
     }
 
+    /**
+     * Get the board width
+     * @return board width, positive number
+     */
+    public int getWidth() {
+        return _board.size();
+    }
+
     private List<List<T>> _board;
 }
