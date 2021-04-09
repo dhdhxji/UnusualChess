@@ -1,5 +1,6 @@
 package com.example.unusualchess.board;
 
+import com.example.unusualchess.board.pieces.EmptyPiece;
 import com.example.unusualchess.common.Role;
 import com.example.unusualchess.util.ChessMoveEvent;
 
@@ -46,6 +47,40 @@ public abstract class Piece {
         }
 
         return false;
+    }
+
+    /**
+     * Check is move to position allowed by board
+     * @param pos position to move on
+     * @param board current board state
+     * @return true if move possible, false otherwise
+     */
+    public final boolean isMovePossible(CellIndex pos, BoardHolder<Piece> board) {
+        //check is out of board bounds
+        if(pos.getFile() < 0 || pos.getFile() >= board.getWidth() ||
+           pos.getRank() < 0 || pos.getRank() >= board.getWidth()) {
+            return false;
+        }
+
+        return board.get(pos) == null || board.get(pos).getClass() == EmptyPiece.class;
+    }
+
+    /**
+     * Check is beat to position allowed by board
+     * @param pos position to beat on
+     * @param board current board state
+     * @return true if beat possible, false otherwise
+     */
+    public final boolean isBeatPossible(CellIndex pos, BoardHolder<Piece> board) {
+        //check is out of board bounds
+        if(pos.getFile() < 0 || pos.getFile() >= board.getWidth() ||
+                pos.getRank() < 0 || pos.getRank() >= board.getWidth()) {
+            return false;
+        }
+
+        return  board.get(pos) != null &&
+                board.get(pos).getClass() !=EmptyPiece.class &&
+                board.get(pos).getRole() != _role;
     }
 
     /**

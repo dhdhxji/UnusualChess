@@ -47,4 +47,113 @@ public class PieceTest {
 
         assertEquals("Piece has another role", Role.WHITE, testPiece.getRole());
     }
+
+    @Test
+    public void isMOvePossibleOutOfBounds() {
+        PieceTestCommonUtils util = new PieceTestCommonUtils(
+            new Pawn(Role.WHITE),
+            new CellIndex('D', 2)
+        );
+
+        assertFalse("Impossible move (out of board bounds)",
+                util.testPiece.isMovePossible(
+                        new CellIndex(9, 9),
+                        util.board
+                ));
+
+        assertFalse("Impossible move (out of board bounds)",
+                util.testPiece.isMovePossible(
+                        new CellIndex(-1, -1),
+                        util.board
+                ));
+    }
+
+    @Test
+    public void isMovePossiblePieceOverlap() {
+        PieceTestCommonUtils util = new PieceTestCommonUtils(
+                new Pawn(Role.WHITE),
+                new CellIndex('D', 2)
+        );
+
+        //set up environment
+        util.board.set(
+                new CellIndex('a', 1),
+                new Pawn(Role.WHITE)
+        );
+
+        assertFalse("Impossible move (piece overlap)",
+                util.testPiece.isMovePossible(
+                        new CellIndex('a', 1),
+                        util.board
+                ));
+    }
+
+    @Test
+    public void isMovePossiblePieceNoOverlap() {
+        PieceTestCommonUtils util = new PieceTestCommonUtils(
+                new Pawn(Role.WHITE),
+                new CellIndex('D', 2)
+        );
+
+        assertTrue("Possible move",
+                util.testPiece.isMovePossible(
+                        new CellIndex('a', 1),
+                        util.board
+                ));
+    }
+
+
+    @Test
+    public void isBeatPossibleOutOfBounds() {
+        PieceTestCommonUtils util = new PieceTestCommonUtils(
+                new Pawn(Role.WHITE),
+                new CellIndex('D', 2)
+        );
+
+        assertFalse("Invalid beat (out of board bounds)",
+                util.testPiece.isBeatPossible(
+                        new CellIndex(8, 8),
+                        util.board
+                ));
+
+        assertFalse("Invalid beat (out of board bounds)",
+                util.testPiece.isBeatPossible(
+                        new CellIndex(0, 0),
+                        util.board
+                ));
+    }
+
+    @Test
+    public void isBeatPossiblePieceNoOverlap() {
+        PieceTestCommonUtils util = new PieceTestCommonUtils(
+                new Pawn(Role.WHITE),
+                new CellIndex('D', 2)
+        );
+
+        assertFalse("Invalid beat (no overlap wit enemy)",
+                util.testPiece.isBeatPossible(
+                        new CellIndex('a', 1),
+                        util.board
+                ));
+    }
+
+    @Test
+    public void isBeatPossiblePieceOverlap() {
+        PieceTestCommonUtils util = new PieceTestCommonUtils(
+                new Pawn(Role.WHITE),
+                new CellIndex('D', 2)
+        );
+
+        //set up environment
+        util.board.set(
+                new CellIndex('a', 1),
+                new Pawn(Role.BLACK)
+        );
+
+        assertTrue("Possible beat",
+                util.testPiece.isBeatPossible(
+                        new CellIndex('a', 1),
+                        util.board
+                ));
+    }
 }
