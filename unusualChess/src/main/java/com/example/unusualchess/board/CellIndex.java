@@ -15,7 +15,9 @@ public class CellIndex {
 
     public CellIndex(char file, int rank) {
         _file = Character.toLowerCase(file) - 'a';
-        _rank = rank;
+
+        //Because in chess notation numeration starts from 1
+        _rank = rank - 1;
     }
 
     /**
