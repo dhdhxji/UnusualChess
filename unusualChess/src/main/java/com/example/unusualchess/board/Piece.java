@@ -22,10 +22,22 @@ public abstract class Piece {
         _role = role;
     }
 
+    /**
+     * Get all available moves/beats for certain position and board situation
+     * @param pos current piece location
+     * @param board current board setup
+     * @param moveHistory history of current game
+     * @return all available moves for this piece
+     */
     abstract public Set<CellIndex> getAvailableMoves(CellIndex pos,
                                                      BoardHolder<Piece> board,
                                                      List<ChessMoveEvent<Piece>> moveHistory);
 
+    /**
+     * Check is current piece was moved
+     * @param moveHistory history of current game
+     * @return true is piece was moved, false otherwise
+     */
     public final boolean isPieceMoved(List<ChessMoveEvent<Piece>> moveHistory) {
         for(ChessMoveEvent<Piece> m: moveHistory) {
             if(m.getPiece() == this) {
@@ -36,11 +48,18 @@ public abstract class Piece {
         return false;
     }
 
-
+    /**
+     * Get type of current piece
+     * @return type of current piece
+     */
     public final Type getType() {
         return _type;
     }
 
+    /**
+     * Get role of current piece
+     * @return role of current piece
+     */
     public final Role getRole() {
         return _role;
     }
