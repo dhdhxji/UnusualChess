@@ -22,15 +22,26 @@ public abstract class Piece {
         _role = role;
     }
 
-     abstract public Set<CellIndex> getAvailableMoves(CellIndex pos,
-                                                      BoardHolder<Piece> board,
-                                                      List<ChessMoveEvent<Piece>> moveHistory);
+    abstract public Set<CellIndex> getAvailableMoves(CellIndex pos,
+                                                     BoardHolder<Piece> board,
+                                                     List<ChessMoveEvent<Piece>> moveHistory);
 
-    public Type getType() {
+    public final boolean isPieceMoved(List<ChessMoveEvent<Piece>> moveHistory) {
+        for(ChessMoveEvent<Piece> m: moveHistory) {
+            if(m.getPiece() == this) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    public final Type getType() {
         return _type;
     }
 
-    public Role getRole() {
+    public final Role getRole() {
         return _role;
     }
 
