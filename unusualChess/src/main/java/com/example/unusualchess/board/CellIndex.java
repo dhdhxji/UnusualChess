@@ -46,6 +46,31 @@ public class CellIndex {
         );
     }
 
+    /**
+     * Subtract one CellIndex to another (like a vectors)
+     * @param i another CellIndex
+     * @return  subtract of CellIndexes
+     */
+    public CellIndex sub(CellIndex i) {
+        return new CellIndex(
+                getFile() - i.getFile(),
+                getRank() - i.getRank()
+        );
+    }
+
+    /**
+     * Calculate the inverse CellIndex
+     * (source CellIndex + !source CellIndex = 0 CellIndex)
+     * @param src board position to be inverted
+     * @return inverse cell index
+     */
+    public static CellIndex inverse(CellIndex src) {
+        return new CellIndex(
+                -src.getFile(),
+                -src.getRank()
+        );
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

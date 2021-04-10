@@ -86,4 +86,23 @@ public class CellIndexTest {
 
         assertEquals("Sum invalid", new CellIndex(4, 6), res);
     }
+
+    @Test
+    public void testSub() {
+        CellIndex a = new CellIndex(1, 2);
+        CellIndex b = new CellIndex(3, 4);
+
+        CellIndex res = a.sub(b);
+
+        assertEquals("Sub invalid", new CellIndex(-2, -2), res);
+    }
+
+    @Test
+    public void testInverse() {
+        CellIndex a = new CellIndex(1, 2);
+
+        CellIndex res = CellIndex.inverse(a);
+
+        assertEquals("Sum invalid", new CellIndex(-1, -2), res);
+    }
 }
