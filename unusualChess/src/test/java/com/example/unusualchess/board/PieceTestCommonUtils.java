@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 public class PieceTestCommonUtils {
     public static final int BOARD_WIDTH = 8;
@@ -23,15 +23,7 @@ public class PieceTestCommonUtils {
         Set<CellIndex> availableMoves =
                 testPiece.getAvailableMoves(srcPos, board, movesHistory);
 
-        assertCompareSetOfMoves(availableMoves, allowedMoves);
-    }
-
-    public static void assertCompareSetOfMoves(Set<CellIndex> availableMoves,
-                                               Set<CellIndex> allowedMoves) {
-        assertTrue("Available moves not cover all allowed moves",
-                availableMoves.containsAll(allowedMoves));
-        assertTrue("Available moves allow too much moves",
-                allowedMoves.containsAll(availableMoves));
+        assertEquals(allowedMoves, availableMoves);
     }
 
     public BoardHolder<Piece> board = new BoardHolder<>(BOARD_WIDTH);

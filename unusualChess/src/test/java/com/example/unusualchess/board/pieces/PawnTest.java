@@ -128,7 +128,7 @@ public class PawnTest {
     public void testBlackNotFirstMove() {
         PieceTestCommonUtils util = new PieceTestCommonUtils(
                 new Pawn(Role.BLACK),
-                new CellIndex('D', 2)
+                new CellIndex('D', 3)
         );
 
         util.movesHistory.add(new ChessMoveEvent<>(
@@ -139,7 +139,7 @@ public class PawnTest {
         ));
 
         //Set up allowed moves
-        util.allowedMoves.add(new CellIndex('D', 1));
+        util.allowedMoves.add(new CellIndex('D', 2));
 
         util.test();
     }
@@ -273,8 +273,6 @@ public class PawnTest {
      *    +---+---+---+---+---+---+---+---+     P - test piece
      *      -   -   -   -   -   -   -   -       * - allowed moves
      *    +---+---+---+---+---+---+---+---+     B - barrier pieces
-     *  4 |   |   |   |   |   |   |   |   |
-     *    +---+---+---+---+---+---+---+---+
      *  3 |   |   |   | B |   |   |   |   |
      *    +---+---+---+---+---+---+---+---+
      *  2 |   |   |   | P |   |   |   |   |
@@ -341,6 +339,8 @@ public class PawnTest {
      *    +---+---+---+---+---+---+---+---+     P - test piece
      *      -   -   -   -   -   -   -   -       * - allowed moves
      *    +---+---+---+---+---+---+---+---+     + - enemy pieces, that can be beaten
+     *  4 |   |   |   | * |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
      *  3 |   |   | + | * | + |   |   |   |
      *    +---+---+---+---+---+---+---+---+
      *  2 |   |   |   | P |   |   |   |   |
@@ -350,7 +350,7 @@ public class PawnTest {
      *      A   B   C   D   E   F   G   H
      */
     @Test
-    public void testBeatMove() {
+    public void testWhiteBeatMove() {
         PieceTestCommonUtils util = new PieceTestCommonUtils(
                 new Pawn(Role.WHITE),
                 new CellIndex('D', 2)
@@ -365,6 +365,42 @@ public class PawnTest {
         util.allowedMoves.add(new CellIndex('D', 3));
         util.allowedMoves.add(new CellIndex('C', 3));
         util.allowedMoves.add(new CellIndex('E', 3));
+        util.allowedMoves.add(new CellIndex('D', 4));
+
+        util.test();
+    }
+
+    /**
+     *    +---+---+---+---+---+---+---+---+     <--- Black side
+     *  8 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+     P - test piece
+     *      -   -   -   -   -   -   -   -       * - allowed moves
+     *    +---+---+---+---+---+---+---+---+     + - enemy pieces, that can be beaten
+     *  3 |   |   |   | P |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  2 |   |   | + | * | + |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  1 |   |   |   | * |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+     <--- White side
+     *      A   B   C   D   E   F   G   H
+     */
+    @Test
+    public void testBlackBeatMove() {
+        PieceTestCommonUtils util = new PieceTestCommonUtils(
+                new Pawn(Role.BLACK),
+                new CellIndex('D', 3)
+        );
+
+        //Set up environment
+        util.board.set(new CellIndex('C', 2), new Pawn(Role.WHITE));
+        util.board.set(new CellIndex('E', 2), new Pawn(Role.WHITE));
+
+
+        //Set up allowed moves
+        util.allowedMoves.add(new CellIndex('D', 2));
+        util.allowedMoves.add(new CellIndex('C', 2));
+        util.allowedMoves.add(new CellIndex('E', 2));
+        util.allowedMoves.add(new CellIndex('D', 1));
 
         util.test();
     }
