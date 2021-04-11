@@ -2,6 +2,9 @@ package com.example.unusualchess.board;
 
 import org.junit.Test;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static org.junit.Assert.*;
 
 public class CellIndexTest {
@@ -104,5 +107,16 @@ public class CellIndexTest {
         CellIndex res = a.inverse();
 
         assertEquals("Sum invalid", new CellIndex(-1, -2), res);
+    }
+
+    @Test
+    public void testGenBasisCellVectors() {
+        Set<CellIndex> expected = new HashSet<>();
+        expected.add(new CellIndex(1, 0));
+        expected.add(new CellIndex(0, 1));
+
+        assertEquals("Generated Cell unit vectors is not valid",
+                expected,
+                CellIndex.genBasisCellVectors());
     }
 }

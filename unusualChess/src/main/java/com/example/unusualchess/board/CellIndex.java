@@ -2,7 +2,9 @@ package com.example.unusualchess.board;
 
 import androidx.annotation.NonNull;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class CellIndex {
 
@@ -68,6 +70,18 @@ public class CellIndex {
                 -getFile(),
                 -getRank()
         );
+    }
+
+    /**
+     * Generate all basis vectors for space, described by CellIndex
+     * @return Set of basis vectors
+     */
+    public static Set<CellIndex> genBasisCellVectors() {
+        Set<CellIndex> res = new HashSet<>();
+        res.add(new CellIndex(1, 0));
+        res.add(new CellIndex(0, 1));
+
+        return res;
     }
 
     @Override
