@@ -101,7 +101,7 @@ public class CellIndexTest {
     public void testInverse() {
         CellIndex a = new CellIndex(1, 2);
 
-        CellIndex res = CellIndex.inverse(a);
+        CellIndex res = a.inverse();
 
         assertEquals("Sum invalid", new CellIndex(-1, -2), res);
     }

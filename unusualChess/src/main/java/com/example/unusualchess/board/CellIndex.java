@@ -61,13 +61,12 @@ public class CellIndex {
     /**
      * Calculate the inverse CellIndex
      * (source CellIndex + !source CellIndex = 0 CellIndex)
-     * @param src board position to be inverted
      * @return inverse cell index
      */
-    public static CellIndex inverse(CellIndex src) {
+    public CellIndex inverse() {
         return new CellIndex(
-                -src.getFile(),
-                -src.getRank()
+                -getFile(),
+                -getRank()
         );
     }
 
