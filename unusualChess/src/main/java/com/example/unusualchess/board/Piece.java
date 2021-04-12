@@ -62,7 +62,9 @@ public abstract class Piece {
             return false;
         }
 
-        return board.get(pos) == null || board.get(pos).getClass() == EmptyPiece.class;
+        Piece p = board.get(pos);
+
+        return p == null || p.getClass() == EmptyPiece.class;
     }
 
     /**
