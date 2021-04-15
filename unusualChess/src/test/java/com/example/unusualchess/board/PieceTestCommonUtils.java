@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class PieceTestCommonUtils {
     public static final int BOARD_WIDTH = 8;
@@ -23,7 +24,16 @@ public class PieceTestCommonUtils {
         Set<CellIndex> availableMoves =
                 testPiece.getAvailableMoves(srcPos, board, movesHistory);
 
-        assertEquals(allowedMoves, availableMoves);
+        //assertEquals(allowedMoves, availableMoves);
+        for(CellIndex computed: availableMoves) {
+            assertTrue("Computed move " + computed + " is invalid",
+                    allowedMoves.contains(computed));
+        }
+
+        for(CellIndex allowed: availableMoves) {
+            assertTrue("Allowed move " + allowed + " is no computed",
+                    availableMoves.contains(allowed));
+        }
     }
 
     public BoardHolder<Piece> board = new BoardHolder<>(BOARD_WIDTH);
