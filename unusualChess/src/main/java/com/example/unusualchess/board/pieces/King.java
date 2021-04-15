@@ -6,6 +6,7 @@ import com.example.unusualchess.board.Piece;
 import com.example.unusualchess.common.Role;
 import com.example.unusualchess.util.ChessMoveEvent;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -32,7 +33,32 @@ public class King extends Piece {
     public Set<CellIndex> getAvailableMoves(CellIndex pos,
                                             BoardHolder<Piece> board,
                                             List<ChessMoveEvent<Piece>> moveHistory) {
-        //TODO: Implement stub
-        return null;
+        Set<CellIndex> moveVectors = new HashSet<>();
+
+        for(CellIndex base: CellIndex.genBasisCellVectors()) {
+            moveVectors.add(base);
+            moveVectors.add(base.inverse());
+
+            Set<CellIndex> derivatives = CellIndex.genBasisCellVectors();
+            derivatives.remove(base);
+
+            for(CellIndex derivative: derivatives) {
+                moveVectors.add(base.add(derivative));
+                moveVectors.add(base.inverse().add(derivative));
+                moveVectors.add(base.add(derivative.inverse()));
+                moveVectors.add(base.inverse().add(derivative.inverse()));
+            }
+        }
+
+        Set<CellIndex> moves = new HashSet<>();
+        for(CellIndex vec: moveVectors) {
+            CellIndex dst = vec.add(pos);
+
+            if(isMovePossible(dst, board) || isBeatPossible(dst, board)) {
+                moves.add(dst);
+            }
+        }
+
+        return moves;
     }
 }
