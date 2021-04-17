@@ -1,11 +1,17 @@
 package com.example.unusualchess.board.pieces;
 
 import com.example.unusualchess.board.CellIndex;
+import com.example.unusualchess.board.Piece;
 import com.example.unusualchess.board.PieceTestCommonUtils;
+import com.example.unusualchess.common.MoveIntent;
 import com.example.unusualchess.common.Role;
 import com.example.unusualchess.util.ChessMoveEvent;
 
+import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class PawnTest {
     /*
@@ -403,5 +409,110 @@ public class PawnTest {
         util.allowedMoves.add(new CellIndex('D', 1));
 
         util.test();
+    }
+
+    /**
+     *    +---+---+---+---+---+---+---+---+     <--- Black side
+     *  8 |   |   |   | * |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+     P - test piece
+     *  7 |   |   |   | P |   |   |   |   |     * - allowed moves
+     *    +---+---+---+---+---+---+---+---+
+     *      -   -   -   -   -   -   -   -
+     *    +---+---+---+---+---+---+---+---+
+     *  2 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  1 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+     <--- White side
+     *      A   B   C   D   E   F   G   H
+     */
+    @Test
+    public void testWhiteTransform() {
+        PieceTestCommonUtils util = new PieceTestCommonUtils(
+                new Pawn(Role.WHITE),
+                new CellIndex('d', 7)
+        );
+
+        Set<Piece> allowedTransforms = new HashSet<>();
+        allowedTransforms.add(new Bishop(util.testPiece.getRole()));
+        allowedTransforms.add(new Queen(util.testPiece.getRole()));
+        allowedTransforms.add(new Knight(util.testPiece.getRole()));
+        allowedTransforms.add(new Rook(util.testPiece.getRole()));
+
+
+        Assert.assertEquals("Invalid transform",
+                allowedTransforms,
+                util.testPiece.getAvailableTransformations(
+                        new MoveIntent(Role.WHITE, util.srcPos, new CellIndex('d', 8)),
+                        util.board
+                ));
+    }
+
+    /**
+     *    +---+---+---+---+---+---+---+---+     <--- Black side
+     *  8 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+     P - test piece
+     *  7 |   |   |   |   |   |   |   |   |     * - allowed moves
+     *    +---+---+---+---+---+---+---+---+
+     *      -   -   -   -   -   -   -   -
+     *    +---+---+---+---+---+---+---+---+
+     *  2 |   |   |   | P |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  1 |   |   |   | * |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+     <--- White side
+     *      A   B   C   D   E   F   G   H
+     */
+    @Test
+    public void testBlackTransform() {
+        PieceTestCommonUtils util = new PieceTestCommonUtils(
+                new Pawn(Role.BLACK),
+                new CellIndex('d', 2)
+        );
+
+        Set<Piece> allowedTransforms = new HashSet<>();
+        allowedTransforms.add(new Bishop(util.testPiece.getRole()));
+        allowedTransforms.add(new Queen(util.testPiece.getRole()));
+        allowedTransforms.add(new Knight(util.testPiece.getRole()));
+        allowedTransforms.add(new Rook(util.testPiece.getRole()));
+
+
+        Assert.assertEquals("Invalid transform",
+                allowedTransforms,
+                util.testPiece.getAvailableTransformations(
+                        new MoveIntent(Role.WHITE, util.srcPos, new CellIndex('d', 1)),
+                        util.board
+                ));
+    }
+
+    /**
+     *    +---+---+---+---+---+---+---+---+     <--- Black side
+     *  8 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+     P - test piece
+     *  7 |   |   |   | * |   |   |   |   |     * - allowed moves
+     *    +---+---+---+---+---+---+---+---+
+     *  6 |   |   |   | P |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *      -   -   -   -   -   -   -   -
+     *    +---+---+---+---+---+---+---+---+
+     *  2 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  1 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+     <--- White side
+     *      A   B   C   D   E   F   G   H
+     */
+    @Test
+    public void testNoTransform() {
+        PieceTestCommonUtils util = new PieceTestCommonUtils(
+                new Pawn(Role.WHITE),
+                new CellIndex('d', 6)
+        );
+
+        Set<Piece> allowedTransforms = new HashSet<>();
+
+        Assert.assertEquals("Invalid transform",
+                allowedTransforms,
+                util.testPiece.getAvailableTransformations(
+                        new MoveIntent(Role.WHITE, util.srcPos, new CellIndex('d', 74)),
+                        util.board
+                ));
     }
 }

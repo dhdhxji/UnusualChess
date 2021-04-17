@@ -3,6 +3,7 @@ package com.example.unusualchess.board.pieces;
 import com.example.unusualchess.board.BoardHolder;
 import com.example.unusualchess.board.CellIndex;
 import com.example.unusualchess.board.Piece;
+import com.example.unusualchess.common.MoveIntent;
 import com.example.unusualchess.common.Role;
 import com.example.unusualchess.util.CellIndexDirectionFilter;
 import com.example.unusualchess.util.CellIndexFilter;
@@ -65,10 +66,22 @@ public class Pawn extends Piece {
         return moves;
     }
 
+    @Override
+    public Set<Piece> getAvailableTransformations(MoveIntent move, BoardHolder<Piece> board) {
+        Set<Piece> transforms = super.getAvailableTransformations(move, board);
+
+        if(getRole() == Role.WHITE && move.getDst().getRank() == board.getWidth()-1 ||
+           getRole() == Role.BLACK && move.getDst().getRank() == 0) {
+            transforms.addAll(genTransformations(getRole()));
+        }
+
+        return transforms;
+    }
+
     private Set<CellIndex> getAvailableMMoves(CellIndex pos,
-                                            BoardHolder<Piece> board,
-                                            Set<CellIndex> moveDirVectors,
-                                            boolean moved) {
+                                              BoardHolder<Piece> board,
+                                              Set<CellIndex> moveDirVectors,
+                                              boolean moved) {
         Set<CellIndex> moves = new HashSet<>();
 
         //Check move vectors
@@ -118,5 +131,21 @@ public class Pawn extends Piece {
         }
 
         return moves;
+    }
+
+    /**
+     * Generate transformation pieces for Pawn
+     * @param r role to generate transformation pieces for
+     * @return generated transformation pieces
+     */
+    private Set<Piece> genTransformations(Role r) {
+        Set<Piece> p = new HashSet<>();
+
+        p.add(new Queen(r));
+        p.add(new Knight(r));
+        p.add(new Bishop(r));
+        p.add(new Rook(r));
+
+        return p;
     }
 }

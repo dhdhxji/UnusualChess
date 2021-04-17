@@ -1,10 +1,16 @@
 package com.example.unusualchess.board;
 
+import androidx.annotation.NonNull;
+
 import com.example.unusualchess.board.pieces.EmptyPiece;
+import com.example.unusualchess.common.MoveIntent;
 import com.example.unusualchess.common.Role;
 import com.example.unusualchess.util.ChessMoveEvent;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public abstract class Piece {
@@ -33,6 +39,17 @@ public abstract class Piece {
     abstract public Set<CellIndex> getAvailableMoves(CellIndex pos,
                                                      BoardHolder<Piece> board,
                                                      List<ChessMoveEvent<Piece>> moveHistory);
+
+    /**
+     * Get available transformation for piece after performing this move
+     * @param move move to be performed
+     * @param board current game state
+     * @return available transformation for piece after performing this move
+     */
+    public Set<Piece> getAvailableTransformations(MoveIntent move,
+                                                  BoardHolder<Piece> board) {
+        return new HashSet<>();
+    }
 
     /**
      * Check is current piece was moved
@@ -99,6 +116,29 @@ public abstract class Piece {
      */
     public final Role getRole() {
         return _role;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Piece{" +
+                "type=" + _type +
+                ", role=" + _role +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Piece piece = (Piece) o;
+        return _type == piece._type &&
+                _role == piece._role;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(_type, _role);
     }
 
     private final Type _type;
