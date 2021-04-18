@@ -1,14 +1,16 @@
 package com.example.unusualchess.board;
 
-import com.example.unusualchess.board.CellIndex;
-
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Class designed for storing the game board state (piece by it`s positions)
  */
 public class BoardHolder<T> {
+    //TODO: Implement as dimension-independent collection (CellIndex-independent,
+    // like big CellIndex-T hashmap or with other sructure)
 
     /**
      * Initialize the BoardHolder with given width
@@ -59,6 +61,27 @@ public class BoardHolder<T> {
      */
     public int getWidth() {
         return _board.size();
+    }
+
+    /**
+     * Search positions of a specific pieces
+     * @param p piece to search for
+     * @return set of positions where pieces located are
+     */
+    public Set<CellIndex> findPiece(T p) {
+        Set<CellIndex> positions = new HashSet<>();
+
+        for(int rank = 0; rank < getWidth(); ++rank) {
+            for(int file = 0; file < getWidth(); ++file) {
+                CellIndex pos = new CellIndex(file, rank);
+
+                if(get(pos) != null && get(pos).equals(p)) {
+                    positions.add(pos);
+                }
+            }
+        }
+
+        return positions;
     }
 
     private List<List<T>> _board;

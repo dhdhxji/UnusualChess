@@ -1,6 +1,14 @@
 package com.example.unusualchess.board;
 
+import com.example.unusualchess.board.pieces.Pawn;
+import com.example.unusualchess.board.pieces.Queen;
+import com.example.unusualchess.common.Role;
+
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 
 import static org.junit.Assert.*;
 
@@ -112,5 +120,46 @@ public class BoardHolderTest {
 
         assertEquals(child1Val, testHolder.get(pos1).get());
         assertEquals(child2Val, testHolder.get(pos2).get());
+    }
+
+    private static <I extends Collection<T>,T> void assertCollectionsEquals(I expected,
+                                                                            I actual) {
+        //check is all expected values in actual set
+        for(T item: expected) {
+            assertTrue("Expected value " + item + " is not in actual set",
+                    actual.contains(item));
+        }
+
+        //check is all actual values in expected set
+        for(T item: actual) {
+            assertTrue("Actual value " + item + " is not in expected set",
+                    expected.contains(item));
+        }
+    }
+
+    @Test
+    public void testFindPiece() {
+        BoardHolder<Piece> testHolder = new BoardHolder<>(TEST_BOARD_WIDTH);
+        CellIndex[] positions = {
+                new CellIndex('a', 1),
+                new CellIndex('f', 5),
+                new CellIndex('d', 7),
+                new CellIndex('c', 8)
+        };
+
+        for(CellIndex pos: positions) {
+            testHolder.set(pos, new Pawn(Role.WHITE));
+        }
+
+        assertCollectionsEquals(new ArrayList<>(Arrays.asList(positions)),
+                testHolder.findPiece(new Pawn(Role.WHITE)));
+
+
+
+        assertCollectionsEquals(new ArrayList<>(),
+                testHolder.findPiece(new Pawn(Role.BLACK)));
+
+        assertCollectionsEquals(new ArrayList<>(),
+                testHolder.findPiece(new Queen(Role.WHITE)));
     }
 }
