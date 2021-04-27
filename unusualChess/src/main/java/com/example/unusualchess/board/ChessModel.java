@@ -94,38 +94,38 @@ public class ChessModel extends ChessModelListenerSupport {
 
         //setup pawns
         for(int file = 0; file < BOARD_WIDTH; ++file) {
-            initial.set(new CellIndex(1, file), new Pawn(Role.WHITE));
-            initial.set(new CellIndex(BOARD_WIDTH-2, file), new Pawn(Role.BLACK));
+            initial.set(new CellIndex(file, 1), new Pawn(Role.WHITE));
+            initial.set(new CellIndex(file, BOARD_WIDTH-2), new Pawn(Role.BLACK));
         }
 
         //set rook`s
         initial.set(new CellIndex(0, 0), new Rook(Role.WHITE));
-        initial.set(new CellIndex(0, BOARD_WIDTH-1), new Rook(Role.WHITE));
+        initial.set(new CellIndex(BOARD_WIDTH-1, 0), new Rook(Role.WHITE));
 
-        initial.set(new CellIndex(BOARD_WIDTH-1, 0), new Rook(Role.BLACK));
+        initial.set(new CellIndex(0, BOARD_WIDTH-1), new Rook(Role.BLACK));
         initial.set(new CellIndex(BOARD_WIDTH-1, BOARD_WIDTH-1), new Rook(Role.BLACK));
 
         //set knight`s
-        initial.set(new CellIndex(0, 1), new Knight(Role.WHITE));
-        initial.set(new CellIndex(0, BOARD_WIDTH-2), new Knight(Role.WHITE));
+        initial.set(new CellIndex(1, 0), new Knight(Role.WHITE));
+        initial.set(new CellIndex(BOARD_WIDTH-2 ,0), new Knight(Role.WHITE));
 
-        initial.set(new CellIndex(BOARD_WIDTH-1, 1), new Knight(Role.BLACK));
-        initial.set(new CellIndex(BOARD_WIDTH-1, BOARD_WIDTH-2), new Knight(Role.BLACK));
+        initial.set(new CellIndex(1, BOARD_WIDTH-1), new Knight(Role.BLACK));
+        initial.set(new CellIndex(BOARD_WIDTH-2, BOARD_WIDTH-1), new Knight(Role.BLACK));
 
         //set bishop`s
-        initial.set(new CellIndex(0, 2), new Bishop(Role.WHITE));
-        initial.set(new CellIndex(0, BOARD_WIDTH-3), new Bishop(Role.WHITE));
+        initial.set(new CellIndex(2, 0), new Bishop(Role.WHITE));
+        initial.set(new CellIndex(BOARD_WIDTH-3, 0), new Bishop(Role.WHITE));
 
-        initial.set(new CellIndex(BOARD_WIDTH-1, 2), new Bishop(Role.BLACK));
-        initial.set(new CellIndex(BOARD_WIDTH-1, BOARD_WIDTH-3), new Bishop(Role.BLACK));
+        initial.set(new CellIndex(2, BOARD_WIDTH-1), new Bishop(Role.BLACK));
+        initial.set(new CellIndex(BOARD_WIDTH-3, BOARD_WIDTH-1), new Bishop(Role.BLACK));
 
         //set queen`s
-        initial.set(new CellIndex(0, 3), new Queen(Role.WHITE));
-        initial.set(new CellIndex(BOARD_WIDTH-1, 3), new Queen(Role.BLACK));
+        initial.set(new CellIndex(3,0), new Queen(Role.WHITE));
+        initial.set(new CellIndex(3, BOARD_WIDTH-1), new Queen(Role.BLACK));
 
         //set kings
-        initial.set(new CellIndex(0, 4), new King(Role.WHITE));
-        initial.set(new CellIndex(BOARD_WIDTH-1, 4), new King(Role.BLACK));
+        initial.set(new CellIndex(4, 0), new King(Role.WHITE));
+        initial.set(new CellIndex(4, BOARD_WIDTH-1), new King(Role.BLACK));
 
         return initial;
     }
