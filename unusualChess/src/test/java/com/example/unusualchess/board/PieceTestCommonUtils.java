@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class PieceTestCommonUtils {
@@ -30,7 +29,7 @@ public class PieceTestCommonUtils {
                     allowedMoves.contains(computed));
         }
 
-        for(CellIndex allowed: availableMoves) {
+        for(CellIndex allowed: allowedMoves) {
             assertTrue("Allowed move " + allowed + " is no computed",
                     availableMoves.contains(allowed));
         }

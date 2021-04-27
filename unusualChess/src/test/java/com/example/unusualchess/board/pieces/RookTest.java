@@ -153,7 +153,7 @@ public class RookTest {
      *    +---+---+---+---+---+---+---+---+
      *  4 |   |   |   | * |   |   |   |   |
      *    +---+---+---+---+---+---+---+---+
-     *  3 | * | * | * | P | * | * | + |   |
+     *  3 |   | + | * | P | * | * | + |   |
      *    +---+---+---+---+---+---+---+---+
      *  2 |   |   |   | * |   |   |   |   |
      *    +---+---+---+---+---+---+---+---+
@@ -171,12 +171,10 @@ public class RookTest {
         //set up env
         util.board.set(new CellIndex('d', 5), new Rook(Role.BLACK));
         util.board.set(new CellIndex('b', 3), new Rook(Role.BLACK));
-        util.board.set(new CellIndex('f', 3), new Rook(Role.BLACK));
-        util.board.set(new CellIndex('d', 2), new Rook(Role.BLACK));
+        util.board.set(new CellIndex('g', 3), new Rook(Role.BLACK));
 
         //set expected moves
         util.allowedMoves.add(new CellIndex('d', 4));
-        util.allowedMoves.add(new CellIndex('a', 3));
         util.allowedMoves.add(new CellIndex('b', 3));
         util.allowedMoves.add(new CellIndex('c', 3));
         util.allowedMoves.add(new CellIndex('e', 3));
@@ -294,11 +292,11 @@ public class RookTest {
      *    +---+---+---+---+---+---+---+---+     + - beat moves
      *  6 |   |   |   | B |   |   |   |   |
      *    +---+---+---+---+---+---+---+---+
-     *  5 |   |   |   | + |   |  |   |   |
+     *  5 |   |   |   | + |   |   |   |   |
      *    +---+---+---+---+---+---+---+---+
      *  4 |   |   |   | * |   |   |   |   |
      *    +---+---+---+---+---+---+---+---+
-     *  3 | * | * | * | P | * | * | + |   |
+     *  3 |   | + | * | P | * | * | + |   |
      *    +---+---+---+---+---+---+---+---+
      *  2 |   |   |   | * |   |   |   |   |
      *    +---+---+---+---+---+---+---+---+
@@ -316,18 +314,18 @@ public class RookTest {
         //set up env
         util.board.set(new CellIndex('d', 5), new Rook(Role.BLACK));
         util.board.set(new CellIndex('b', 3), new Rook(Role.BLACK));
-        util.board.set(new CellIndex('f', 3), new Rook(Role.BLACK));
-        util.board.set(new CellIndex('d', 2), new Rook(Role.BLACK));
+        util.board.set(new CellIndex('g', 3), new Rook(Role.BLACK));
         util.board.set(new CellIndex('d', 6), new Rook(Role.WHITE));
 
 
         //set expected moves
+        util.allowedMoves.add(new CellIndex('d', 5));
         util.allowedMoves.add(new CellIndex('d', 4));
-        util.allowedMoves.add(new CellIndex('a', 3));
         util.allowedMoves.add(new CellIndex('b', 3));
         util.allowedMoves.add(new CellIndex('c', 3));
         util.allowedMoves.add(new CellIndex('e', 3));
         util.allowedMoves.add(new CellIndex('f', 3));
+        util.allowedMoves.add(new CellIndex('g', 3));
         util.allowedMoves.add(new CellIndex('d', 2));
         util.allowedMoves.add(new CellIndex('d', 1));
 
@@ -346,8 +344,8 @@ public class RookTest {
      *  8 |   |   |   |   |   |   |   |   |
      *    +---+---+---+---+---+---+---+---+     P - test piece
      *  7 |   |   |   |   |   |   |   |   |     * - allowed moves
-     *    +---+---+---+---+---+---+---+---+     + - beat moves
-     *  6 |   |   |   | + |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+     @ - beat moves (unreachable)
+     *  6 |   |   |   | @ |   |   |   |   |
      *    +---+---+---+---+---+---+---+---+
      *  5 |   |   |   | B |   |  |   |   |
      *    +---+---+---+---+---+---+---+---+
@@ -369,11 +367,9 @@ public class RookTest {
         );
 
         //set up env
-        util.board.set(new CellIndex('d', 5), new Rook(Role.WHITE));
-        util.board.set(new CellIndex('b', 3), new Rook(Role.BLACK));
-        util.board.set(new CellIndex('f', 3), new Rook(Role.BLACK));
-        util.board.set(new CellIndex('d', 2), new Rook(Role.BLACK));
         util.board.set(new CellIndex('d', 6), new Rook(Role.BLACK));
+        util.board.set(new CellIndex('d', 5), new Rook(Role.WHITE));
+        util.board.set(new CellIndex('g', 3), new Rook(Role.BLACK));
 
 
         //set expected moves
@@ -383,6 +379,7 @@ public class RookTest {
         util.allowedMoves.add(new CellIndex('c', 3));
         util.allowedMoves.add(new CellIndex('e', 3));
         util.allowedMoves.add(new CellIndex('f', 3));
+        util.allowedMoves.add(new CellIndex('g', 3));
         util.allowedMoves.add(new CellIndex('d', 2));
         util.allowedMoves.add(new CellIndex('d', 1));
 
@@ -403,7 +400,7 @@ public class RookTest {
      *    +---+---+---+---+---+---+---+---+     + - beat moves
      *  6 |   |   |   | + |   |   |   |   |
      *    +---+---+---+---+---+---+---+---+
-     *  5 |   |   |   | + |   |  |   |   |
+     *  5 |   |   |   | + |   |   |   |   |
      *    +---+---+---+---+---+---+---+---+
      *  4 |   |   |   | * |   |   |   |   |
      *    +---+---+---+---+---+---+---+---+
@@ -423,27 +420,21 @@ public class RookTest {
         );
 
         //set up env
+        util.board.set(new CellIndex('d', 6), new Rook(Role.BLACK));
         util.board.set(new CellIndex('d', 5), new Rook(Role.BLACK));
-        util.board.set(new CellIndex('b', 3), new Rook(Role.BLACK));
-        util.board.set(new CellIndex('f', 3), new Rook(Role.BLACK));
-        util.board.set(new CellIndex('d', 2), new Rook(Role.BLACK));
-        util.board.set(new CellIndex('d', 6), new Rook(Role.WHITE));
-
+        util.board.set(new CellIndex('g', 3), new Rook(Role.BLACK));
 
         //set expected moves
+        util.allowedMoves.add(new CellIndex('d', 5));
         util.allowedMoves.add(new CellIndex('d', 4));
         util.allowedMoves.add(new CellIndex('a', 3));
         util.allowedMoves.add(new CellIndex('b', 3));
         util.allowedMoves.add(new CellIndex('c', 3));
         util.allowedMoves.add(new CellIndex('e', 3));
         util.allowedMoves.add(new CellIndex('f', 3));
+        util.allowedMoves.add(new CellIndex('g', 3));
         util.allowedMoves.add(new CellIndex('d', 2));
         util.allowedMoves.add(new CellIndex('d', 1));
-
-
-        //beaten pieces
-        util.allowedMoves.add(new CellIndex('d', 5));
-        util.allowedMoves.add(new CellIndex('g', 3));
 
         util.test();
     }
