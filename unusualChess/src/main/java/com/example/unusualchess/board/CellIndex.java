@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import static java.lang.Math.abs;
+
 public class CellIndex {
 
     public CellIndex(int file, int rank){
@@ -82,6 +84,28 @@ public class CellIndex {
         res.add(new CellIndex(0, 1));
 
         return res;
+    }
+
+    /**
+     * Calculate the manhattan distance between CellIndexes
+     * @param ref CellIndex for calculate distance to
+     * @return manhattan distance between CellIndexes (positive number or zero)
+     */
+    public int manhattanDistance(CellIndex ref) {
+        CellIndex offset = ref.sub(this);
+
+        return abs(offset.getFile()) + abs(offset.getRank());
+    }
+
+    /**
+     * Get manhattan normalized CellIndex
+     * @return manhattan normalized CellIndex
+     */
+    public CellIndex manhattanNormalize() {
+        return new CellIndex(
+                (getFile() != 0)? getFile()/abs(getFile()) : 0,
+                (getRank() != 0)? getRank()/abs(getRank()) : 0
+        );
     }
 
     @Override

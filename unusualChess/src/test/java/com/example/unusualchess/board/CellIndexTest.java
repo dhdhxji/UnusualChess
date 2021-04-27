@@ -119,4 +119,24 @@ public class CellIndexTest {
                 expected,
                 CellIndex.genBasisCellVectors());
     }
+
+    @Test
+    public void testManhattanDistance() {
+        CellIndex a = new CellIndex(5, 5);
+        CellIndex b = new CellIndex(10, 10);
+
+        assertEquals(10, b.manhattanDistance(a));
+    }
+
+    @Test
+    public void testManhattanNormalize() {
+        CellIndex a = new CellIndex(5, -5);
+        CellIndex b = new CellIndex(0, 10);
+
+        CellIndex aNormExp = new CellIndex(1, -1);
+        CellIndex bNormExp = new CellIndex(0, 1);
+
+        assertEquals(aNormExp, a.manhattanNormalize());
+        assertEquals(bNormExp, b.manhattanNormalize());
+    }
 }
