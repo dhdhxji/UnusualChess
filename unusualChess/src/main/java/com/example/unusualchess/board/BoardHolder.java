@@ -10,7 +10,7 @@ import java.util.Set;
  */
 public class BoardHolder<T> {
     //TODO: Implement as dimension-independent collection (CellIndex-independent,
-    // like big CellIndex-T hashmap or with other sructure)
+    // like big CellIndex-T HasMap or with other Collection)
 
     /**
      * Initialize the BoardHolder with given width
@@ -38,7 +38,7 @@ public class BoardHolder<T> {
     /**
      * Get value set in ceratin position
      * @param pos location of desired value
-     * @return value located at requested position
+     * @return value located at requested position, if it is exists. null in other cases
      */
     public T get(CellIndex pos) {
         return _board.get(pos.getFile()).get(pos.getRank());
