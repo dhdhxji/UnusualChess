@@ -125,10 +125,13 @@ public class CellIndex {
     @NonNull
     @Override
     public String toString() {
-        return "CellIndex{" +
-                ", file=" + _file +
-                ", rank=" + _rank +
-                '}';
+        if(_file >= 0 && _rank >= 0 &&
+           _file < 8 && _rank < 8) {
+            return Character.toString((char)('A' + _file)) + ((char)('1' + _rank));
+        } else {
+            return "{" + (_file) + ";" + (_rank) + "}" +
+                    "(" + (_file+1) + ";" + (_rank+1) + ")";
+        }
     }
 
 
