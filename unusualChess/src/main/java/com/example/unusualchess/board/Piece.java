@@ -52,11 +52,24 @@ public abstract class Piece {
     }
 
     /**
+     * Get moves required for perform this move (like King moving in castling move)
+     * @param move move to be performed
+     * @param board current game state
+     * @return list required moves
+     */
+    public List<MoveIntent> getRequiredMoves(MoveIntent move,
+                                             BoardHolder<Piece> board,
+                                             List<ChessMoveEvent<Piece>> moveHistory) {
+        return new ArrayList<>();
+    }
+
+    /**
      * Check is current piece was moved
      * @param moveHistory history of current game
      * @return true is piece was moved, false otherwise
      */
     public final boolean isPieceMoved(List<ChessMoveEvent<Piece>> moveHistory) {
+        //TODO: process move cancellation
         for(ChessMoveEvent<Piece> m: moveHistory) {
             if(m.getPiece() == this) {
                 return true;
