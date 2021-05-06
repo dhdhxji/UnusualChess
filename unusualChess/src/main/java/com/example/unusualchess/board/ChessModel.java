@@ -1,6 +1,7 @@
 package com.example.unusualchess.board;
 
 import com.example.unusualchess.board.pieces.Bishop;
+import com.example.unusualchess.board.pieces.EmptyPiece;
 import com.example.unusualchess.board.pieces.King;
 import com.example.unusualchess.board.pieces.Knight;
 import com.example.unusualchess.board.pieces.Pawn;
@@ -14,6 +15,7 @@ import com.example.unusualchess.util.ChessMoveEvent;
 import com.example.unusualchess.util.InvalidCellIndexException;
 import com.example.unusualchess.util.InvalidPlayerException;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -43,13 +45,13 @@ public class ChessModel extends ChessModelListenerSupport {
             throw new InvalidCellIndexException(m.getDst());
         }
 
-        //TODO: uncomment check
-        /*Set<CellIndex> availableMoves = getAvailableMoves(m.getSrc());
+        Set<CellIndex> availableMoves = getAvailableMoves(m.getSrc());
         if( !availableMoves.contains(m.getDst()) ) {
             throw new ChessInvalidMoveException(m.getSrc(), m.getDst());
-        }*/
+        }
 
         //Perform move
+        //TODO: generate events by factory(with auto increase of seq number)
         int moveSeqNumber = getLastMoveNumber();
         ChessMoveEvent<Piece> moveEvent = new ChessMoveEvent<>(m.getSrc(),
                 m.getDst(),
@@ -78,8 +80,18 @@ public class ChessModel extends ChessModelListenerSupport {
      * @return set of available moves
      */
     public Set<CellIndex> getAvailableMoves(CellIndex pos) {
-        //TODO: Implement stub
-        return null;
+        Piece p = _currentBoardState.get(pos);
+
+        if(p == null || p.getClass() == EmptyPiece.class) {
+            return new HashSet<>();
+        }
+
+        Set<CellIndex> moves = p.getAvailableMoves(pos, _currentBoardState, _moveHistory);
+        if(moves != null) {
+            return moves;
+        } else {
+            return new HashSet<>();
+        }
     }
 
     /**
