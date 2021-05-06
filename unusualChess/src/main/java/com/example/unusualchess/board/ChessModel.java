@@ -15,6 +15,7 @@ import com.example.unusualchess.util.ChessMoveEvent;
 import com.example.unusualchess.util.InvalidCellIndexException;
 import com.example.unusualchess.util.InvalidPlayerException;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -175,7 +176,7 @@ public class ChessModel extends ChessModelListenerSupport {
      */
     public List<ChessMoveEvent<Piece>> getMoveHistoryFrom(int startMoveSeqNumber) {
         if(startMoveSeqNumber == -1) {
-            return _moveHistory;
+            return new LinkedList<>(_moveHistory);
         }
 
         //Find start seq number
@@ -185,7 +186,7 @@ public class ChessModel extends ChessModelListenerSupport {
             startIndex++;
         }
 
-        return _moveHistory.subList(startIndex, _moveHistory.size());
+        return new LinkedList<>(_moveHistory.subList(startIndex, _moveHistory.size()));
     }
 
     /**

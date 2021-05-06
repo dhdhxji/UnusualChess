@@ -35,6 +35,26 @@ public class ChessModelTest {
                 testModel.getCurrentState().get(new CellIndex('a', 4)));
     }
 
+    @Test
+    public void testHistoryRefEdit() throws Exception{
+        ChessModel testModel = new ChessModel();
+        MoveIntent move = new MoveIntent(
+                Role.WHITE,
+                new CellIndex('a', 2),
+                new CellIndex('a', 4)
+        );
+
+        testModel.move(move);
+
+        //Edit history
+        testModel.getMoveHistoryFrom(-1).clear();
+
+        //check is history edited
+        assertFalse(testModel.getMoveHistoryFrom(-1).isEmpty());
+    }
+
+    //TODO: check is current state mutable by reference (returns copy or not)
+
     //TODO: beat move
     //TODO: check ChessInvalidMoveException
     //TODO: check InvalidCellIndexException
