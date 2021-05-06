@@ -21,6 +21,11 @@ import java.util.List;
 import java.util.Set;
 
 public class ChessModel extends ChessModelListenerSupport {
+
+    public ChessModel() {
+        reset();
+    }
+
     /**
      * Perform move
      *
@@ -52,7 +57,7 @@ public class ChessModel extends ChessModelListenerSupport {
 
         //Perform move
         //TODO: generate events by factory(with auto increase of seq number)
-        int moveSeqNumber = getLastMoveNumber();
+        int moveSeqNumber = (getLastMoveNumber() == -1) ? 0 : getLastMoveNumber() + 1;
         ChessMoveEvent<Piece> moveEvent = new ChessMoveEvent<>(m.getSrc(),
                 m.getDst(),
                 moveSeqNumber,
@@ -163,11 +168,16 @@ public class ChessModel extends ChessModelListenerSupport {
     }
 
     /**
-     * Get part of history after certain move sequence number
-     * @param startMoveSeqNumber start sequence number
+     * Get part of history after certain move sequence number. Returns a copy of history,
+     * but not history itself.
+     * @param startMoveSeqNumber start sequence number, -1 to fetch all history
      * @return part of history after certain move sequence number
      */
     public List<ChessMoveEvent<Piece>> getMoveHistoryFrom(int startMoveSeqNumber) {
+        if(startMoveSeqNumber == -1) {
+            return _moveHistory;
+        }
+
         //Find start seq number
         int startIndex = 0;
         while(startIndex < _moveHistory.size() &&
@@ -175,7 +185,7 @@ public class ChessModel extends ChessModelListenerSupport {
             startIndex++;
         }
 
-        return _moveHistory.subList(startIndex, _moveHistory.size()-1);
+        return _moveHistory.subList(startIndex, _moveHistory.size());
     }
 
     /**
