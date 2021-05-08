@@ -14,10 +14,9 @@ import com.example.unusualchess.util.ChessModelListenerSupport;
 import com.example.unusualchess.util.ChessMoveEvent;
 import com.example.unusualchess.util.InvalidCellIndexException;
 import com.example.unusualchess.util.InvalidPlayerException;
+import com.example.unusualchess.util.MoveHistory;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -57,18 +56,13 @@ public class ChessModel extends ChessModelListenerSupport {
         }
 
         //Perform move
-        //TODO: generate events by factory(with auto increase of seq number)
-        int moveSeqNumber = (getLastMoveNumber() == -1) ? 0 : getLastMoveNumber() + 1;
+        //TODO: process move transformation
         ChessMoveEvent<Piece> moveEvent = new ChessMoveEvent<>(m.getSrc(),
                 m.getDst(),
-                moveSeqNumber,
+                -1,
                 _currentBoardState.get(m.getSrc()) );
 
-        _moveHistory.add(moveEvent);
-        _currentBoardState.set( m.getDst(), _currentBoardState.get(m.getSrc()) );
-        _currentBoardState.set(m.getSrc(), null);
-
-        movePerformed(moveEvent);
+        updateBoardState(moveEvent);
 
         //Change next move player
         if(_currentPlayer == Role.WHITE) {
@@ -79,10 +73,18 @@ public class ChessModel extends ChessModelListenerSupport {
     }
 
     /**
+     * Perform a cancellation of last move
+     */
+    public void cancelLastMove() {
+        //It`s player independent, just revert last move
+        List<ChessMoveEvent<Piece>> cancelEvents = _moveHistory.cancelLastMove();
+
+        updateBoardState(cancelEvents);
+    }
+
+    /**
      * Return all available move positions for a certain position
-     *
      * @param pos position to get available moves for
-     *
      * @return set of available moves
      */
     public Set<CellIndex> getAvailableMoves(CellIndex pos) {
@@ -92,7 +94,9 @@ public class ChessModel extends ChessModelListenerSupport {
             return new HashSet<>();
         }
 
-        Set<CellIndex> moves = p.getAvailableMoves(pos, _currentBoardState, _moveHistory);
+        //TODO: use move history instead of inner list
+        Set<CellIndex> moves = p.getAvailableMoves(pos, _currentBoardState,
+                _moveHistory.getShortHistory(-1));
         if(moves != null) {
             return moves;
         } else {
@@ -105,6 +109,7 @@ public class ChessModel extends ChessModelListenerSupport {
      */
     public void reset() {
         _currentBoardState = getInitialBoardSetup();
+        _moveHistory = new MoveHistory();
     }
 
     public static BoardHolder<Piece> getInitialBoardSetup() {
@@ -157,39 +162,6 @@ public class ChessModel extends ChessModelListenerSupport {
     }
 
     /**
-     * Get the last move sequence number
-     * @return last move sequence number, -1 if there is no movements
-     */
-    public int getLastMoveNumber() {
-        if(_moveHistory.size() == 0) {
-            return -1;
-        }
-
-        return _moveHistory.get(_moveHistory.size()-1).getSeqNumber();
-    }
-
-    /**
-     * Get part of history after certain move sequence number. Returns a copy of history,
-     * but not history itself.
-     * @param startMoveSeqNumber start sequence number, -1 to fetch all history
-     * @return part of history after certain move sequence number
-     */
-    public List<ChessMoveEvent<Piece>> getMoveHistoryFrom(int startMoveSeqNumber) {
-        if(startMoveSeqNumber == -1) {
-            return new LinkedList<>(_moveHistory);
-        }
-
-        //Find start seq number
-        int startIndex = 0;
-        while(startIndex < _moveHistory.size() &&
-                _moveHistory.get(startIndex).getSeqNumber() <= startMoveSeqNumber) {
-            startIndex++;
-        }
-
-        return new LinkedList<>(_moveHistory.subList(startIndex, _moveHistory.size()));
-    }
-
-    /**
      * Check is position valid
      * @param pos position to validate
      * @return is position valid
@@ -200,12 +172,40 @@ public class ChessModel extends ChessModelListenerSupport {
                 (pos.getRank() >= 0) && (pos.getFile() >= 0);
     }
 
+    /**
+     * Get piece movement history
+     * @return piece movement history
+     */
+    public MoveHistory getMoveHistory() {
+        return _moveHistory;
+    }
 
+    /**
+     * Make all board updating stuff, based on MoveIntent.
+     * Also notifies all boardListeners and adds event to move history.
+     * @param ev event that describes what happened
+     */
+    private void updateBoardState(ChessMoveEvent<Piece> ev) {
+        //TODO: process beating
+        ev = _moveHistory.addMove(ev);
+        _currentBoardState.set(ev.getDst(), ev.getPiece());
+        _currentBoardState.set(ev.getSrc(), null);
 
+        movePerformed(ev);
+    }
 
+    /**
+     * Make all board updating stuff, based on MoveIntent. Also notifies all boardListeners
+     * @param ev events that describes what happened
+     */
+    private void updateBoardState(Iterable<ChessMoveEvent<Piece>> ev) {
+        for(ChessMoveEvent<Piece> e: ev) {
+            updateBoardState(e);
+        }
+    }
 
     public static final int BOARD_WIDTH = 8;
     private BoardHolder<Piece> _currentBoardState = new BoardHolder<>(BOARD_WIDTH);
-    private List<ChessMoveEvent<Piece>> _moveHistory = new LinkedList<>();
+    private MoveHistory _moveHistory = new MoveHistory();
     private Role _currentPlayer = Role.WHITE;
 }
