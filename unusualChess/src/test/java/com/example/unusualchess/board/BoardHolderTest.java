@@ -1,5 +1,6 @@
 package com.example.unusualchess.board;
 
+import com.example.unusualchess.board.pieces.King;
 import com.example.unusualchess.board.pieces.Pawn;
 import com.example.unusualchess.board.pieces.Queen;
 import com.example.unusualchess.common.Role;
@@ -180,5 +181,10 @@ public class BoardHolderTest {
         BoardHolder<Piece> testHolderClone = new BoardHolder<>(testHolder);
 
         assertEquals(testHolder, testHolderClone);
+
+        //try to change clone
+        testHolderClone.set(new CellIndex('c', 5), new King(Role.WHITE));
+
+        assertNotEquals(testHolderClone, testHolder);
     }
 }
