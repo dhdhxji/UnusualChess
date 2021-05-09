@@ -9,6 +9,14 @@ import java.util.ListIterator;
 
 public class MoveHistory {
 
+    public MoveHistory() {
+        _moveHistory = new LinkedList<>();
+    }
+
+    public MoveHistory(MoveHistory ref) {
+        _moveHistory = new LinkedList<>(ref._moveHistory);
+    }
+
     /**
      * Get last action sequence number
      * @return last event sequence number, -1 if there no events
@@ -115,5 +123,5 @@ public class MoveHistory {
         return hist;
     }
 
-    private final List<ChessMoveEvent<Piece>> _moveHistory = new LinkedList<>();
+    private final List<ChessMoveEvent<Piece>> _moveHistory;
 }
