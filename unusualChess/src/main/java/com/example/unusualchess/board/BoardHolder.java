@@ -3,8 +3,10 @@ package com.example.unusualchess.board;
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -12,21 +14,22 @@ import java.util.Set;
  * Class designed for storing the game board state (piece by it`s positions)
  */
 public class BoardHolder<T> {
-    //TODO: Implement as dimension-independent collection (CellIndex-independent,
-    // like big CellIndex-T HasMap or with other Collection)
+    /**
+     * Initialize the BoardHolder
+     */
+    public BoardHolder() {
+        _board = new HashMap<>();
+        _width = 0;
+    }
 
     /**
      * Initialize the BoardHolder with given width
      * @param width is width of 2d board
      */
+    @Deprecated
     public BoardHolder(int width) {
-        _board = new ArrayList<>();
-        for(int i = 0; i < width; ++i) {
-            _board.add(new ArrayList<>(width));
-            for(int j = 0; j < width; ++j) {
-                _board.get(i).add(null);
-            }
-        }
+        _width = width;
+        _board = new HashMap<>();
     }
 
     /**
@@ -34,10 +37,8 @@ public class BoardHolder<T> {
      * @param ref BoardHolder initializer
      */
     public BoardHolder(BoardHolder<T> ref) {
-        _board = new ArrayList<>();
-        for(List<T> refLine: ref._board) {
-            _board.add(new ArrayList<>(refLine));
-        }
+        _board = new HashMap<>(ref._board);
+        _width = ref._width;
     }
 
     /**
@@ -46,7 +47,7 @@ public class BoardHolder<T> {
      * @param piece value to set in certain position
      */
     public void set(CellIndex pos, T piece) {
-        _board.get(pos.getFile()).set(pos.getRank(), piece);
+        _board.put(pos, piece);
     }
 
     /**
@@ -55,26 +56,23 @@ public class BoardHolder<T> {
      * @return value located at requested position, if it is exists. null in other cases
      */
     public T get(CellIndex pos) {
-        return _board.get(pos.getFile()).get(pos.getRank());
+        return _board.get(pos);
     }
 
     /**
      * Clear the board
      */
     public void clear() {
-        for (List<T> row: _board) {
-            for(int i = 0; i < row.size(); ++i) {
-                row.set(i, null);
-            }
-        }
+        _board.clear();
     }
 
     /**
      * Get the board width
      * @return board width, positive number
      */
+    @Deprecated
     public int getWidth() {
-        return _board.size();
+        return _width;
     }
 
     /**
@@ -85,13 +83,9 @@ public class BoardHolder<T> {
     public Set<CellIndex> findPiece(T p) {
         Set<CellIndex> positions = new HashSet<>();
 
-        for(int rank = 0; rank < getWidth(); ++rank) {
-            for(int file = 0; file < getWidth(); ++file) {
-                CellIndex pos = new CellIndex(file, rank);
-
-                if(get(pos) != null && get(pos).equals(p)) {
-                    positions.add(pos);
-                }
+        for (Map.Entry<CellIndex, T> entry : _board.entrySet()) {
+            if (entry.getValue().equals(p)) {
+                positions.add(entry.getKey());
             }
         }
 
@@ -103,6 +97,7 @@ public class BoardHolder<T> {
     public String toString() {
         return "BoardHolder{" +
                 "_board=" + _board +
+                ", _width=" + _width +
                 '}';
     }
 
@@ -111,13 +106,15 @@ public class BoardHolder<T> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BoardHolder<?> that = (BoardHolder<?>) o;
-        return Objects.equals(_board, that._board);
+        return _width == that._width &&
+                Objects.equals(_board, that._board);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(_board);
+        return Objects.hash(_board, _width);
     }
 
-    private final List<List<T>> _board;
+    private final HashMap<CellIndex, T> _board;
+    private final int _width;
 }
