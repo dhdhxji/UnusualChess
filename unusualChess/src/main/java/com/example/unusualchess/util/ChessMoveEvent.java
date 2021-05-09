@@ -120,14 +120,16 @@ public class ChessMoveEvent<T> {
     @Override
     public String toString() {
         return "ChessMoveEvent{" +
-                "_piece=" + _piece + "@" + System.identityHashCode(_transformFrom) +
+                "_piece=" + _piece +
                 ", _src=" + _src +
                 ", _dst=" + _dst +
-                ", _transformFrom=" + _transformFrom + "@" + System.identityHashCode(_transformFrom) +
-                ", _transformTo=" + _transformTo + "@" + System.identityHashCode(_transformFrom) +
+                ", _transformFrom=" + _transformFrom +
+                ", _transformTo=" + _transformTo +
                 ", _cancelMove=" + _cancelMove +
                 ", _seqNumber=" + _seqNumber +
                 ", _prevMoveBound=" + _prevMoveBound +
+                ", _beatKingPos=" + _beatKingPos +
+                ", _winner=" + _winner +
                 '}';
     }
 
@@ -139,16 +141,18 @@ public class ChessMoveEvent<T> {
         return _cancelMove == that._cancelMove &&
                 _seqNumber == that._seqNumber &&
                 _prevMoveBound == that._prevMoveBound &&
-                _piece == that._piece &&
-                _src.equals(that._src) &&
-                _dst.equals(that._dst) &&
+                Objects.equals(_piece, that._piece) &&
+                Objects.equals(_src, that._src) &&
+                Objects.equals(_dst, that._dst) &&
                 Objects.equals(_transformFrom, that._transformFrom) &&
-                Objects.equals(_transformTo, that._transformTo);
+                Objects.equals(_transformTo, that._transformTo) &&
+                Objects.equals(_beatKingPos, that._beatKingPos) &&
+                _winner == that._winner;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(_piece, _src, _dst, _transformFrom, _transformTo, _cancelMove, _seqNumber, _prevMoveBound);
+        return Objects.hash(_piece, _src, _dst, _transformFrom, _transformTo, _cancelMove, _seqNumber, _prevMoveBound, _beatKingPos, _winner);
     }
 
     private final T _piece;
