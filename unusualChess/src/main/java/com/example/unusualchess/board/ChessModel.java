@@ -15,8 +15,10 @@ import com.example.unusualchess.util.ChessMoveEvent;
 import com.example.unusualchess.util.InvalidCellIndexException;
 import com.example.unusualchess.util.InvalidPlayerException;
 import com.example.unusualchess.util.MoveHistory;
+import com.example.unusualchess.util.TransformationNotAllowedException;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -33,10 +35,14 @@ public class ChessModel extends ChessModelListenerSupport {
      *
      * @throws ChessInvalidMoveException if src->dest is impossible move
      * @throws InvalidCellIndexException if src or dst is incorrect cell index
-     * @throws InvalidPlayerException if it's not this player's turn
+     * @throws InvalidPlayerException if it's not this player's
+     * @throws TransformationNotAllowedException if selected transformation not acceptable
      */
     public void move(MoveIntent m)
-            throws ChessInvalidMoveException, InvalidCellIndexException, InvalidPlayerException {
+            throws ChessInvalidMoveException,
+            InvalidCellIndexException,
+            InvalidPlayerException,
+            TransformationNotAllowedException {
         //Check is move possible
         if(m.getRole() != _currentPlayer) {
             throw new InvalidPlayerException("Now is " + _currentPlayer + " players`s turn");
@@ -55,14 +61,15 @@ public class ChessModel extends ChessModelListenerSupport {
             throw new ChessInvalidMoveException(m.getSrc(), m.getDst());
         }
 
-        //Perform move
-        //TODO: process move transformation
-        ChessMoveEvent<Piece> moveEvent = new ChessMoveEvent<>(m.getSrc(),
-                m.getDst(),
-                -1,
-                _currentBoardState.get(m.getSrc()) );
+        if( m.getTransformTo() != null &&
+            !transformAvailable(m).contains(m.getTransformTo())) {
+            throw new TransformationNotAllowedException("Transformation to " +
+                    m.getTransformTo() + " not available for this move (" + m + ")");
+        }
 
-        updateBoardState(moveEvent);
+        //Perform move
+        List<ChessMoveEvent<Piece>> moveEvents = generateMoveEvents(m);
+        updateBoardStateAndHistory(moveEvents);
 
         //Change next move player
         if(_currentPlayer == Role.WHITE) {
@@ -88,6 +95,8 @@ public class ChessModel extends ChessModelListenerSupport {
      * @return set of available moves
      */
     public Set<CellIndex> getAvailableMoves(CellIndex pos) {
+        //TODO: check & checkmate situation
+        //TODO: precess required moves to satisfy check and checkmate situations
         Piece p = _currentBoardState.get(pos);
 
         if(p == null || p.getClass() == EmptyPiece.class) {
@@ -105,14 +114,26 @@ public class ChessModel extends ChessModelListenerSupport {
     }
 
     /**
+     * Get available piece transformation for this move
+     * @param m move intent to be performed
+     * @return available transformations for this move
+     */
+    public Set<Piece> transformAvailable(MoveIntent m) {
+        Piece p = _currentBoardState.get(m.getSrc());
+
+        return p.getAvailableTransformations(m, getCurrentState());
+    }
+
+    /**
      * Reset game, setup initial pieces configuration
      */
     public void reset() {
         _currentBoardState = getInitialBoardSetup();
         _moveHistory = new MoveHistory();
+        _beatenPiece.clear();
     }
 
-    public static BoardHolder<Piece> getInitialBoardSetup() {
+    public BoardHolder<Piece> getInitialBoardSetup() {
         BoardHolder<Piece> initial = new BoardHolder<>(BOARD_WIDTH);
 
         //setup pawns
@@ -158,7 +179,7 @@ public class ChessModel extends ChessModelListenerSupport {
      * @return current game state
      */
     public BoardHolder<Piece> getCurrentState() {
-        return _currentBoardState;
+        return new BoardHolder<>(_currentBoardState);
     }
 
     /**
@@ -181,12 +202,69 @@ public class ChessModel extends ChessModelListenerSupport {
     }
 
     /**
+     * Get set of beaten pieces
+     * @return set of beaten pieces
+     */
+    public Set<Piece> getBeatenPieces() {
+        return new HashSet<>(_beatenPiece);
+    }
+
+
+    private List<ChessMoveEvent<Piece>> generateMoveEvents(MoveIntent m) {
+        List<ChessMoveEvent<Piece>> res = new LinkedList<>();
+
+        res.add(
+                new ChessMoveEvent<>(
+                        m.getSrc(),
+                        m.getDst(),
+                        -1,
+                        (m.getTransformTo() == null) ?
+                                _currentBoardState.get(m.getSrc()) : m.getTransformTo(),
+                        _currentBoardState.get(m.getSrc()),
+                        false,
+                        false
+                )
+        );
+
+        //Add required moves
+        List<MoveIntent> required = _currentBoardState.get(m.getSrc()).getRequiredMoves(
+                m,
+                getCurrentState(),
+                _moveHistory.getShortHistory(-1)
+        );
+
+        //TODO: process required moves recursively
+        for(MoveIntent reqIntent: required) {
+            res.add(
+                    new ChessMoveEvent<>(
+                            reqIntent.getSrc(),
+                            reqIntent.getDst(),
+                            -1,
+                            (reqIntent.getTransformTo() == null) ?
+                                    _currentBoardState.get(reqIntent.getSrc()) :
+                                    reqIntent.getTransformTo(),
+                            _currentBoardState.get(m.getSrc()),
+                            false,
+                            true
+                    ));
+        }
+
+        return res;
+    }
+
+    /**
      * Make all board updating stuff, based on MoveIntent.
      * Also notifies all boardListeners and adds event to move history.
      * @param ev event that describes what happened
      */
-    private void updateBoardState(ChessMoveEvent<Piece> ev) {
-        //TODO: process beating
+    private void updateBoardStateAndHistory(ChessMoveEvent<Piece> ev) {
+        Role r = ev.getPiece().getRole();
+        if(_currentBoardState.get(ev.getDst()) != null &&
+           _currentBoardState.get(ev.getDst()).getRole() != r) {
+            //Piece beaten
+            _beatenPiece.add(_currentBoardState.get(ev.getDst()));
+        }
+
         ev = _moveHistory.addMove(ev);
         _currentBoardState.set(ev.getDst(), ev.getPiece());
         _currentBoardState.set(ev.getSrc(), null);
@@ -195,7 +273,38 @@ public class ChessModel extends ChessModelListenerSupport {
     }
 
     /**
-     * Make all board updating stuff, based on MoveIntent. Also notifies all boardListeners
+     * Make all board updating stuff, based on MoveIntent.
+     * Also notifies all boardListeners and adds event to move history.
+     * @param ev events that describes what happened
+     */
+    private void updateBoardStateAndHistory(Iterable<ChessMoveEvent<Piece>> ev) {
+        for(ChessMoveEvent<Piece> e: ev) {
+            updateBoardStateAndHistory(e);
+        }
+    }
+
+    /**
+     * Make all board updating stuff, based on MoveIntent.
+     * Also notifies all boardListeners.
+     * @param ev event that describes what happened
+     */
+    private void updateBoardState(ChessMoveEvent<Piece> ev) {
+        Role r = ev.getPiece().getRole();
+        if(_currentBoardState.get(ev.getDst()) != null &&
+                _currentBoardState.get(ev.getDst()).getRole() != r) {
+            //Piece beaten
+            _beatenPiece.add(_currentBoardState.get(ev.getDst()));
+        }
+
+        _currentBoardState.set(ev.getDst(), ev.getPiece());
+        _currentBoardState.set(ev.getSrc(), null);
+
+        movePerformed(ev);
+    }
+
+    /**
+     * Make all board updating stuff, based on MoveIntent.
+     * Also notifies all boardListeners.
      * @param ev events that describes what happened
      */
     private void updateBoardState(Iterable<ChessMoveEvent<Piece>> ev) {
@@ -208,4 +317,5 @@ public class ChessModel extends ChessModelListenerSupport {
     private BoardHolder<Piece> _currentBoardState = new BoardHolder<>(BOARD_WIDTH);
     private MoveHistory _moveHistory = new MoveHistory();
     private Role _currentPlayer = Role.WHITE;
+    private final Set<Piece> _beatenPiece = new HashSet<>();
 }
