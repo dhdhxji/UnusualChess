@@ -326,4 +326,25 @@ public class MoveHistoryTest {
 
         assertNotEquals(hist.getHistory(-1), histClone.getHistory(-1));
     }
+
+    @Test
+    public void testCloneEquals() {
+        Piece testPiece = new Pawn(Role.WHITE);
+        MoveHistory hist = new MoveHistory();
+
+        ChessMoveEvent<Piece> ev = new ChessMoveEvent<>(
+                new CellIndex('a', 1),
+                new CellIndex('a', 2),
+                -1,
+                testPiece,
+                testPiece,
+                false,
+                false
+        );
+        hist.addMove(ev);
+
+        MoveHistory histClone = new MoveHistory(hist);
+
+        assertEquals(hist, histClone);
+    }
 }

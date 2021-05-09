@@ -1,10 +1,13 @@
 package com.example.unusualchess.util;
 
+import androidx.annotation.NonNull;
+
 import com.example.unusualchess.board.Piece;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 
 
 public class MoveHistory {
@@ -121,6 +124,27 @@ public class MoveHistory {
         }
 
         return hist;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "MoveHistory{" +
+               _moveHistory +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MoveHistory that = (MoveHistory) o;
+        return Objects.equals(_moveHistory, that._moveHistory);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(_moveHistory);
     }
 
     private final List<ChessMoveEvent<Piece>> _moveHistory;
