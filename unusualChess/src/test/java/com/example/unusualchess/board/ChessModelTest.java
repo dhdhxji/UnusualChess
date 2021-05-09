@@ -212,6 +212,30 @@ public class ChessModelTest {
         testModel.move(move);
     }
 
+    @Test
+    public void testCopyConstructor() throws Exception {
+        ChessModel testModel = new ChessModel();
+        MoveIntent move = new MoveIntent(
+                Role.WHITE,
+                new CellIndex('a', 2),
+                new CellIndex('a', 4)
+        );
+
+        testModel.move(move);
+        ChessModel testModelClone = new ChessModel(testModel);
+
+        assertEquals(testModel, testModelClone);
+
+        move = new MoveIntent(
+                Role.BLACK,
+                new CellIndex('b', 7),
+                new CellIndex('b', 5)
+        );
+        testModelClone.move(move);
+
+        assertNotEquals(testModel, testModelClone);
+    }
+
 
     //TODO: check situation
     //TODO: check & mate situation

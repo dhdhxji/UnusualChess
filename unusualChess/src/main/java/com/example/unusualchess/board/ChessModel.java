@@ -1,5 +1,7 @@
 package com.example.unusualchess.board;
 
+import androidx.annotation.NonNull;
+
 import com.example.unusualchess.board.pieces.Bishop;
 import com.example.unusualchess.board.pieces.EmptyPiece;
 import com.example.unusualchess.board.pieces.King;
@@ -20,12 +22,20 @@ import com.example.unusualchess.util.TransformationNotAllowedException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class ChessModel extends ChessModelListenerSupport {
 
     public ChessModel() {
         reset();
+    }
+
+    public ChessModel(ChessModel ref) {
+        _currentBoardState = new BoardHolder<>(ref._currentBoardState);
+        _moveHistory = new MoveHistory(ref._moveHistory);
+        _currentPlayer = ref._currentPlayer;
+        _beatenPiece = new HashSet<>(ref._beatenPiece);
     }
 
     /**
@@ -209,6 +219,34 @@ public class ChessModel extends ChessModelListenerSupport {
         return new HashSet<>(_beatenPiece);
     }
 
+    @NonNull
+    @Override
+    public String toString() {
+        return "ChessModel{" +
+                "_currentBoardState=" + _currentBoardState +
+                ", _moveHistory=" + _moveHistory +
+                ", _currentPlayer=" + _currentPlayer +
+                ", _beatenPiece=" + _beatenPiece +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessModel that = (ChessModel) o;
+        return Objects.equals(_currentBoardState, that._currentBoardState) &&
+                Objects.equals(_moveHistory, that._moveHistory) &&
+                _currentPlayer == that._currentPlayer &&
+                Objects.equals(_beatenPiece, that._beatenPiece);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(_currentBoardState, _moveHistory, _currentPlayer, _beatenPiece);
+    }
+
+
 
     private List<ChessMoveEvent<Piece>> generateMoveEvents(MoveIntent m) {
         List<ChessMoveEvent<Piece>> res = new LinkedList<>();
@@ -317,5 +355,5 @@ public class ChessModel extends ChessModelListenerSupport {
     private BoardHolder<Piece> _currentBoardState = new BoardHolder<>(BOARD_WIDTH);
     private MoveHistory _moveHistory = new MoveHistory();
     private Role _currentPlayer = Role.WHITE;
-    private final Set<Piece> _beatenPiece = new HashSet<>();
+    private Set<Piece> _beatenPiece = new HashSet<>();
 }
