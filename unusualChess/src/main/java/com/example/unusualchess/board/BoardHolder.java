@@ -1,8 +1,11 @@
 package com.example.unusualchess.board;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -23,6 +26,17 @@ public class BoardHolder<T> {
             for(int j = 0; j < width; ++j) {
                 _board.get(i).add(null);
             }
+        }
+    }
+
+    /**
+     * Initialize BoardHolder from another BoardHolder (make a copy)
+     * @param ref BoardHolder initializer
+     */
+    public BoardHolder(BoardHolder<T> ref) {
+        _board = new ArrayList<>();
+        for(List<T> refLine: ref._board) {
+            _board.add(new ArrayList<>(refLine));
         }
     }
 
@@ -84,5 +98,26 @@ public class BoardHolder<T> {
         return positions;
     }
 
-    private List<List<T>> _board;
+    @NonNull
+    @Override
+    public String toString() {
+        return "BoardHolder{" +
+                "_board=" + _board +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BoardHolder<?> that = (BoardHolder<?>) o;
+        return Objects.equals(_board, that._board);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(_board);
+    }
+
+    private final List<List<T>> _board;
 }

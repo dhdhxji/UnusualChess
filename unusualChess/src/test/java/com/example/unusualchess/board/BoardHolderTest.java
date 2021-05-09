@@ -162,4 +162,23 @@ public class BoardHolderTest {
         assertCollectionsEquals(new ArrayList<>(),
                 testHolder.findPiece(new Queen(Role.WHITE)));
     }
+
+    @Test
+    public void testClone() {
+        BoardHolder<Piece> testHolder = new BoardHolder<>(TEST_BOARD_WIDTH);
+        CellIndex[] positions = {
+                new CellIndex('a', 1),
+                new CellIndex('f', 5),
+                new CellIndex('d', 7),
+                new CellIndex('c', 8)
+        };
+
+        for(CellIndex pos: positions) {
+            testHolder.set(pos, new Pawn(Role.WHITE));
+        }
+
+        BoardHolder<Piece> testHolderClone = new BoardHolder<>(testHolder);
+
+        assertEquals(testHolder, testHolderClone);
+    }
 }
