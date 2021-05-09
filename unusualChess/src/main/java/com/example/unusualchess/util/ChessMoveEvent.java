@@ -3,21 +3,15 @@ package com.example.unusualchess.util;
 import androidx.annotation.NonNull;
 
 import com.example.unusualchess.board.CellIndex;
+import com.example.unusualchess.common.Role;
 
 import java.util.Objects;
 
 
 public class ChessMoveEvent<T> {
     public ChessMoveEvent(CellIndex src, CellIndex dst, int seqNumber, T piece) {
-       _src = src;
-       _dst = dst;
-       _seqNumber = seqNumber;
-       _piece = piece;
-
-       _transformFrom = piece;
-       _transformTo = piece;
-       _cancelMove = false;
-       _prevMoveBound = false;
+        this(src, dst, seqNumber, piece, piece,
+                false, false, null, null);
     }
 
     public ChessMoveEvent(CellIndex src,
@@ -27,6 +21,19 @@ public class ChessMoveEvent<T> {
                           T transformFrom,
                           boolean isCancel,
                           boolean prevMoveBound) {
+        this(src, dst, seqNumber, piece, transformFrom,
+                isCancel, prevMoveBound, null, null);
+    }
+
+    public ChessMoveEvent(CellIndex src,
+                          CellIndex dst,
+                          int seqNumber,
+                          T piece,
+                          T transformFrom,
+                          boolean isCancel,
+                          boolean prevMoveBound,
+                          CellIndex beatKingPos,
+                          Role winner) {
         _src = src;
         _dst = dst;
         _seqNumber = seqNumber;
@@ -35,17 +42,22 @@ public class ChessMoveEvent<T> {
         _transformTo = piece;
         _cancelMove = isCancel;
         _prevMoveBound = prevMoveBound;
+        _beatKingPos = beatKingPos;
+        _winner = winner;
     }
 
     public ChessMoveEvent(ChessMoveEvent<T> src, int seqNumber) {
-        _src = src.getSrc();
-        _dst = src.getDst();
-        _piece = src.getPiece();
-        _transformFrom = src.getTransformFrom();
-        _transformTo = src.getTransformTo();
-        _cancelMove = src.isCancelMove();
-        _seqNumber = seqNumber;
-        _prevMoveBound = src.isPreviousMoveBound();
+        this(
+                src.getSrc(),
+                src.getDst(),
+                seqNumber,
+                src.getPiece(),
+                src.getTransformFrom(),
+                src.isCancelMove(),
+                src.isPreviousMoveBound(),
+                src.getCheckKingPos(),
+                src.getWinner()
+        );
     }
 
     public CellIndex getSrc() {
@@ -92,6 +104,18 @@ public class ChessMoveEvent<T> {
         );
     }
 
+    public boolean isCheck() {
+        return _beatKingPos != null;
+    }
+
+    public CellIndex getCheckKingPos() {
+        return _beatKingPos;
+    }
+
+    public Role getWinner() {
+        return _winner;
+    }
+
     @NonNull
     @Override
     public String toString() {
@@ -135,4 +159,6 @@ public class ChessMoveEvent<T> {
     private final boolean _cancelMove;
     private final int _seqNumber;
     private final boolean _prevMoveBound;
+    private final CellIndex _beatKingPos;
+    private final Role _winner;
 }
