@@ -20,6 +20,7 @@ import com.example.unusualchess.util.MoveHistory;
 import com.example.unusualchess.util.TransformationNotAllowedException;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -78,15 +79,7 @@ public class ChessModel extends ChessModelListenerSupport {
         }
 
         //Perform move
-        List<ChessMoveEvent<Piece>> moveEvents = generateMoveEvents(m);
-        updateBoardStateAndHistory(moveEvents);
-
-        //Change next move player
-        if(_currentPlayer == Role.WHITE) {
-            _currentPlayer = Role.BLACK;
-        } else {
-            _currentPlayer = Role.WHITE;
-        }
+        forceMove(m);
     }
 
     /**
@@ -105,22 +98,40 @@ public class ChessModel extends ChessModelListenerSupport {
      * @return set of available moves
      */
     public Set<CellIndex> getAvailableMoves(CellIndex pos) {
-        //TODO: check & checkmate situation
-        //TODO: precess required moves to satisfy check and checkmate situations
+        Set<CellIndex> moves = getRawAvailableMoves(pos);
         Piece p = _currentBoardState.get(pos);
 
-        if(p == null || p.getClass() == EmptyPiece.class) {
-            return new HashSet<>();
+        //Filter check situation moves
+        Iterator<CellIndex> movesIterator = moves.iterator();
+        while (movesIterator.hasNext()) {
+            CellIndex moveDst = movesIterator.next();
+
+            ChessModel testChamber = new ChessModel(this);
+            //Small hack to make possible performing a move
+            testChamber._currentPlayer = p.getRole();
+
+            MoveIntent m = new MoveIntent(p.getRole(), pos, moveDst);
+            Set<Piece> transforms = testChamber.transformAvailable(m);
+            if( transforms.size() != 0 ) {
+                m = new MoveIntent(m.getRole(), m.getSrc(), m.getDst(),
+                        (Piece)transforms.toArray()[0]);
+            }
+
+            try {
+                testChamber.forceMove(m);
+            } catch (Exception e) {
+                //This should not happen everywhere
+                e.printStackTrace();
+                continue;
+            }
+
+            if(testChamber.isCheckSituation(p.getRole())) {
+                //This move (sequence) cause a check situation
+                movesIterator.remove();
+            }
         }
 
-        //TODO: use move history instead of inner list
-        Set<CellIndex> moves = p.getAvailableMoves(pos, _currentBoardState,
-                _moveHistory.getShortHistory(-1));
-        if(moves != null) {
-            return moves;
-        } else {
-            return new HashSet<>();
-        }
+        return moves;
     }
 
     /**
@@ -219,6 +230,89 @@ public class ChessModel extends ChessModelListenerSupport {
         return new HashSet<>(_beatenPiece);
     }
 
+    /**
+     * Check is game in check situation for a current player
+     * @param r player to check check situation
+     * @return true if Role r in check situation, false otherwise
+     */
+    public boolean isCheckSituation(Role r) {
+        //loop over all enemy pieces & check available moves dst is not own king
+        for(CellIndex pos: _currentBoardState.getPiecePositions()) {
+            Piece p = _currentBoardState.get(pos);
+            if(p.getRole().equals(r)) {
+                continue;
+            }
+
+            for(CellIndex m: getRawAvailableMoves(pos)) {
+                if ( new King(r).equals(_currentBoardState.get(m)) ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check is game in check situation for a current player
+     * @return true if Role r in check situation, false otherwise
+     */
+    public boolean isCheckSituation() {
+        return isCheckSituation(_currentPlayer);
+    }
+
+    /**
+     * Check is game in checkmate situation for a current player
+     * @return true if Role r in checkmate situation, false otherwise
+     */
+    public boolean isCheckMateSituation() {
+        return isCheckSituation() && isPatSituation();
+    }
+
+    /**
+     * Check is game in pat situation for a current player
+     * @return true if Role r in pat situation, false otherwise
+     */
+    public boolean isPatSituation() {
+        //Check every enemy piece for available moves (with mate situation no movements available)
+        for(CellIndex piecePos: _currentBoardState.getPiecePositions()) {
+            if(_currentBoardState.get(piecePos).getRole() != _currentPlayer) {
+                continue;
+            }
+
+            if(getAvailableMoves(piecePos).size() != 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Get current game situation for a current player
+     * @return situation of game, related to given role
+     */
+    public Situation getCurrentSituation() {
+        boolean isPat = isPatSituation();
+        boolean isCheck = isCheckSituation();
+
+        if(isPat && isCheck) {
+            return Situation.CHECKMATE;
+        }
+
+        if(isPat) {
+            return Situation.PAT;
+        }
+
+        if(isCheck) {
+            return Situation.CHECK;
+        }
+
+        return Situation.PROGRESS;
+    }
+
+
+
     @NonNull
     @Override
     public String toString() {
@@ -244,6 +338,15 @@ public class ChessModel extends ChessModelListenerSupport {
     @Override
     public int hashCode() {
         return Objects.hash(_currentBoardState, _moveHistory, _currentPlayer, _beatenPiece);
+    }
+
+
+
+    public enum Situation {
+        CHECK,
+        CHECKMATE,
+        PAT,
+        PROGRESS
     }
 
 
@@ -349,6 +452,44 @@ public class ChessModel extends ChessModelListenerSupport {
         for(ChessMoveEvent<Piece> e: ev) {
             updateBoardState(e);
         }
+    }
+
+    /**
+     * Make a move without any checkup
+     * @param m move intent
+     */
+    private void forceMove(MoveIntent m) {
+        List<ChessMoveEvent<Piece>> moveEvents = generateMoveEvents(m);
+        updateBoardStateAndHistory(moveEvents);
+
+        //Change next move player
+        if(_currentPlayer == Role.WHITE) {
+            _currentPlayer = Role.BLACK;
+        } else {
+            _currentPlayer = Role.WHITE;
+        }
+    }
+
+    /**
+     * Generate available moves position without check & checkmate filtering
+     * @param pos piece position to generate moves for
+     * @return a set of available to move positions
+     */
+    private Set<CellIndex> getRawAvailableMoves(CellIndex pos) {
+        Piece p = _currentBoardState.get(pos);
+
+        if(p == null || p.getClass() == EmptyPiece.class) {
+            return new HashSet<>();
+        }
+
+        //TODO: use move history instead of inner list (optimisation)
+        Set<CellIndex> moves = p.getAvailableMoves(pos, _currentBoardState,
+                _moveHistory.getShortHistory(-1));
+        if(moves == null) {
+            moves = new HashSet<>();
+        }
+
+        return moves;
     }
 
     public static final int BOARD_WIDTH = 8;

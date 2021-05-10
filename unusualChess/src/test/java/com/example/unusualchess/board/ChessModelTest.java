@@ -12,6 +12,9 @@ import com.example.unusualchess.util.InvalidPlayerException;
 
 import org.junit.Test;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static org.junit.Assert.*;
 
 public class ChessModelTest {
@@ -236,18 +239,263 @@ public class ChessModelTest {
         assertNotEquals(testModel, testModelClone);
     }
 
+    /**
+     *    +---+---+---+---+---+---+---+---+     <--- Black side
+     *  8 |   |   |   |BK |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  7 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  6 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  5 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  4 |   |   |   |WQ |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  3 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  2 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  1 |   |   |   |   |   |WK-->  |   |
+     *    +---+---+---+---+---+---+---+---+     <--- White side
+     *      A   B   C   D   E   F   G   H
+     */
+    @Test
+    public void testCheckSituationDetermining() throws Exception{
+        ChessModel testModel = new ChessModel() {
+            @Override
+            public BoardHolder<Piece> getInitialBoardSetup() {
+                BoardHolder<Piece> initialBoard = new BoardHolder<>(BOARD_WIDTH);
 
-    //TODO: check situation
-    //TODO: check & mate situation
-    //TODO: check board state updates
+                initialBoard.set(new CellIndex('d', 8), new King(Role.BLACK));
+                initialBoard.set(new CellIndex('d', 4), new Queen(Role.WHITE));
+                initialBoard.set(new CellIndex('f', 1), new King(Role.WHITE));
 
-    //TODO: check & checkmate with required moves
-    //TODO: try to move by enemy pieces
-    //Move history check
-    //TODO: Check is move added
-    //TODO: Check is move revert interpreted normally
-    //TODO: Check is piece moved after revert move
-    //TODO: Getting history from certain position
+                return initialBoard;
+            }
+        };
 
+        //is check for white (no)
+        assertFalse(testModel.isCheckSituation());
+        assertEquals(ChessModel.Situation.PROGRESS, testModel.getCurrentSituation());
 
+        MoveIntent m = new MoveIntent(Role.WHITE,
+                new CellIndex('f', 1),
+                new CellIndex('g',1));
+        testModel.move(m);
+
+        //Is check for black (yes)
+        assertTrue(testModel.isCheckSituation());
+        assertEquals(ChessModel.Situation.CHECK, testModel.getCurrentSituation());
+
+        assertFalse(testModel.isCheckSituation(Role.WHITE));
+        assertTrue(testModel.isCheckSituation(Role.BLACK));
+    }
+
+    /**
+     *    +---+---+---+---+---+---+---+---+     <--- Black side
+     *  8 |   |   | * |BK | * |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  7 |   |   | * |   | * |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  6 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  5 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  4 |   |   |   |WQ |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  3 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  2 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  1 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+     <--- White side
+     *      A   B   C   D   E   F   G   H
+     */
+    @Test
+    public void testCheckSituationAvailableMoves() {
+        ChessModel testModel = new ChessModel() {
+            @Override
+            public BoardHolder<Piece> getInitialBoardSetup() {
+                BoardHolder<Piece> initialBoard = new BoardHolder<>(BOARD_WIDTH);
+
+                initialBoard.set(new CellIndex('d', 8), new King(Role.BLACK));
+                initialBoard.set(new CellIndex('d', 4), new Queen(Role.WHITE));
+
+                return initialBoard;
+            }
+        };
+
+        Set<CellIndex> expectedAvailableMoves = new HashSet<>();
+        expectedAvailableMoves.add(new CellIndex('c', 8));
+        expectedAvailableMoves.add(new CellIndex('c', 7));
+        expectedAvailableMoves.add(new CellIndex('e', 8));
+        expectedAvailableMoves.add(new CellIndex('e', 7));
+
+        assertEquals(
+                expectedAvailableMoves,
+                testModel.getAvailableMoves(new CellIndex('d', 8))
+        );
+    }
+
+    /**
+     *    +---+---+---+---+---+---+---+---+     <--- Black side
+     *  8 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  7 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  6 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  5 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  4 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  3 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  2 |BW |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  1 |BQ |   |   |WK |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+     <--- White side
+     *      A   B   C   D   E   F   G   H
+     */
+    @Test
+    public void testCheckMateSituationDetermining() {
+        ChessModel testModel = new ChessModel() {
+            @Override
+            public BoardHolder<Piece> getInitialBoardSetup() {
+                BoardHolder<Piece> initialBoard = new BoardHolder<>(BOARD_WIDTH);
+
+                initialBoard.set(new CellIndex('d', 1), new King(Role.WHITE));
+                initialBoard.set(new CellIndex('a', 1), new Queen(Role.BLACK));
+                initialBoard.set(new CellIndex('a', 2), new Queen(Role.BLACK));
+
+                return initialBoard;
+            }
+        };
+
+        assertTrue(testModel.isCheckMateSituation());
+        assertEquals(ChessModel.Situation.CHECKMATE, testModel.getCurrentSituation());
+    }
+
+    /**
+     *    +---+---+---+---+---+---+---+---+     <--- Black side
+     *  8 |WQ |   |   |BK |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  7 |WQ |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  6 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  5 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  4 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  3 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  2 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  1 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+     <--- White side
+     *      A   B   C   D   E   F   G   H
+     */
+    @Test
+    public void testCheckMateSituationAvailableMoves() {
+        ChessModel testModel = new ChessModel() {
+            @Override
+            public BoardHolder<Piece> getInitialBoardSetup() {
+                BoardHolder<Piece> initialBoard = new BoardHolder<>(BOARD_WIDTH);
+
+                initialBoard.set(new CellIndex('d', 8), new King(Role.BLACK));
+                initialBoard.set(new CellIndex('a', 8), new Queen(Role.WHITE));
+                initialBoard.set(new CellIndex('a', 7), new Queen(Role.WHITE));
+
+                return initialBoard;
+            }
+        };
+
+        Set<CellIndex> expectedAvailableMoves = new HashSet<>();
+
+        assertEquals(
+                expectedAvailableMoves,
+                testModel.getAvailableMoves(new CellIndex('d', 8))
+        );
+    }
+
+    /**
+     *    +---+---+---+---+---+---+---+---+     <--- Black side
+     *  8 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  7 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  6 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  5 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  4 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  3 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  2 |   |   |BQ |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  1 |WK |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+     <--- White side
+     *      A   B   C   D   E   F   G   H
+     */
+    @Test
+    public void testPatSituation() {
+        ChessModel testModel = new ChessModel() {
+            @Override
+            public BoardHolder<Piece> getInitialBoardSetup() {
+                BoardHolder<Piece> initialBoard = new BoardHolder<>(BOARD_WIDTH);
+
+                initialBoard.set(new CellIndex('a', 1), new King(Role.WHITE));
+                initialBoard.set(new CellIndex('c', 2), new Queen(Role.BLACK));
+
+                return initialBoard;
+            }
+        };
+
+        assertTrue(testModel.isPatSituation());
+        assertEquals(ChessModel.Situation.PAT, testModel.getCurrentSituation());
+    }
+
+    /**
+     *    +---+---+---+---+---+---+---+---+     <--- Black side
+     *  8 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  7 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  6 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  5 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  4 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  3 |   |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  2 |   |   |BQ |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+
+     *  1 |WK |   |   |   |   |   |   |   |
+     *    +---+---+---+---+---+---+---+---+     <--- White side
+     *      A   B   C   D   E   F   G   H
+     */
+    @Test
+    public void testPatAvailableMoves() {
+        ChessModel testModel = new ChessModel() {
+            @Override
+            public BoardHolder<Piece> getInitialBoardSetup() {
+                BoardHolder<Piece> initialBoard = new BoardHolder<>(BOARD_WIDTH);
+
+                initialBoard.set(new CellIndex('a', 1), new King(Role.WHITE));
+                initialBoard.set(new CellIndex('c', 2), new Queen(Role.BLACK));
+
+                return initialBoard;
+            }
+        };
+
+        Set<CellIndex> expectedAvailableMoves = new HashSet<>();
+
+        assertEquals(
+                expectedAvailableMoves,
+                testModel.getAvailableMoves(new CellIndex('a', 1))
+        );
+    }
 }
