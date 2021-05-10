@@ -2,10 +2,8 @@ package com.example.unusualchess.board;
 
 import androidx.annotation.NonNull;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -15,18 +13,9 @@ import java.util.Set;
  */
 public class BoardHolder<T> {
     /**
-     * Initialize the BoardHolder
-     */
-    public BoardHolder() {
-        _board = new HashMap<>();
-        _width = 0;
-    }
-
-    /**
      * Initialize the BoardHolder with given width
      * @param width is width of 2d board
      */
-    @Deprecated
     public BoardHolder(int width) {
         _width = width;
         _board = new HashMap<>();
@@ -70,7 +59,6 @@ public class BoardHolder<T> {
      * Get the board width
      * @return board width, positive number
      */
-    @Deprecated
     public int getWidth() {
         return _width;
     }
