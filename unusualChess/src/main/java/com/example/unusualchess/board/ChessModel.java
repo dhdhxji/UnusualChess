@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-public class ChessModel extends ChessModelListenerSupport {
+public class ChessModel extends ChessModelListenerSupport<Piece> {
 
     public ChessModel() {
         reset();

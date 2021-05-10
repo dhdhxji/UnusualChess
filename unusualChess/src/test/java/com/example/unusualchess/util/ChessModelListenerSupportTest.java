@@ -1,6 +1,7 @@
 package com.example.unusualchess.util;
 
 import com.example.unusualchess.board.CellIndex;
+import com.example.unusualchess.board.Piece;
 
 import org.junit.Test;
 
@@ -18,7 +19,7 @@ public class ChessModelListenerSupportTest {
 
     @Test
     public void testSendEvent() {
-        ChessModelListenerSupport t = new ChessModelListenerSupport();
+        ChessModelListenerSupport<Integer> t = new ChessModelListenerSupport<>();
         MockEventListener l = new MockEventListener();
 
         t.addListener(l);
@@ -40,7 +41,7 @@ public class ChessModelListenerSupportTest {
 
     @Test
     public void testAddTwoTimes() {
-        ChessModelListenerSupport t = new ChessModelListenerSupport();
+        ChessModelListenerSupport<Integer> t = new ChessModelListenerSupport<>();
         MockEventListener l = new MockEventListener();
 
         t.addListener(l);
@@ -55,7 +56,7 @@ public class ChessModelListenerSupportTest {
 
     @Test
     public void testRemove() {
-        ChessModelListenerSupport t = new ChessModelListenerSupport();
+        ChessModelListenerSupport<Integer> t = new ChessModelListenerSupport<>();
         MockEventListener l = new MockEventListener();
 
         t.addListener(l);
