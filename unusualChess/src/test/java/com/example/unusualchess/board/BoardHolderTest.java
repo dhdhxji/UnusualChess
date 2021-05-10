@@ -10,6 +10,8 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -186,5 +188,26 @@ public class BoardHolderTest {
         testHolderClone.set(new CellIndex('c', 5), new King(Role.WHITE));
 
         assertNotEquals(testHolderClone, testHolder);
+    }
+
+    @Test
+    public void testGetPiecePositions() {
+        BoardHolder<Piece> testHolder = new BoardHolder<>(TEST_BOARD_WIDTH);
+        Set<CellIndex> positions = new HashSet<>();
+        positions.add(new CellIndex('a', 1));
+        positions.add(new CellIndex('f', 5));
+        positions.add(new CellIndex('d', 7));
+        positions.add(new CellIndex('c', 8));
+
+        for(CellIndex pos: positions) {
+            testHolder.set(pos, new Pawn(Role.WHITE));
+        }
+
+        assertEquals(positions, testHolder.getPiecePositions());
+
+        testHolder.set(new CellIndex('a', 1), null);
+        positions.remove(new CellIndex('a', 1));
+
+        assertEquals(positions, testHolder.getPiecePositions());
     }
 }

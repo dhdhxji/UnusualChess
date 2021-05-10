@@ -36,7 +36,11 @@ public class BoardHolder<T> {
      * @param piece value to set in certain position
      */
     public void set(CellIndex pos, T piece) {
-        _board.put(pos, piece);
+        if(piece == null) {
+            _board.remove(pos);
+        } else {
+            _board.put(pos, piece);
+        }
     }
 
     /**
@@ -78,6 +82,14 @@ public class BoardHolder<T> {
         }
 
         return positions;
+    }
+
+    /**
+     * Get all available pieces positions
+     * @return set of all available pieces positions
+     */
+    public Set<CellIndex> getPiecePositions() {
+        return _board.keySet();
     }
 
     @NonNull
