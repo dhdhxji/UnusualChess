@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.unusualchess.arbiter.ai.ChessAi;
+import com.example.unusualchess.arbiter.ai.RandomMoves;
 import com.example.unusualchess.chessModel.board.CellIndex;
 import com.example.unusualchess.chessModel.ChessModel;
 import com.example.unusualchess.chessModel.board.Piece;
@@ -35,6 +37,8 @@ public class ChessBattleActivity extends AppCompatActivity
         //TODO: receive from repository
         _model = new ChessModel();
         _model.reset();
+
+        _ai = new RandomMoves(_model, Role.BLACK);
 
         _switchBtn = findViewById(R.id.button3);
         _switchBtn.setOnClickListener(this);
@@ -82,10 +86,20 @@ public class ChessBattleActivity extends AppCompatActivity
                     _model.move(m);
                 } catch (Exception e) {
                     Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
                 }
 
                 _selectedPiece = null;
                 _ui.unmarkTiles();
+
+                //Compute next move
+                _ai.movePerformed(m);
+                try {
+                    _model.move(_ai.getNextMove());
+                } catch (Exception e) {
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                }
             } else {
                 //chose another pos
                 _selectedPiece = pos;
@@ -100,4 +114,5 @@ public class ChessBattleActivity extends AppCompatActivity
     private ChessModel _model;
     private ChessBattleUI _ui;
     private Button _switchBtn;
+    private ChessAi _ai;
 }
