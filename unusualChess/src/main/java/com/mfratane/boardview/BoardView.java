@@ -200,6 +200,7 @@ public class BoardView extends GridLayout {
      * @param j position coord j.
      */
     public void setPiece(int i, int j, int imageid){
+
         if (dimm == -1){
             pieceQueues.add(new PieceQueue(new Pos(i, j), imageid));
             return;

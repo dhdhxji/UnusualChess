@@ -141,9 +141,17 @@ public class ChessBattleUI implements ChessModelListener<Piece>, BoardView.Board
         BoardView.Pos srcPos = fromCellIndex(ev.getSrc());
         BoardView.Pos dstPos = fromCellIndex(ev.getDst());
 
+        _view.movePiece(srcPos, dstPos);
+
+        //Process transformation
+        if(ev.getTransformTo() != null && ev.getTransformFrom() != ev.getTransformTo()) {
+
+            _view.removePiece(dstPos.getI(), dstPos.getJ());
+            _view.setPiece(dstPos.getI(), dstPos.getJ(), getSpriteId(ev.getTransformTo()));
+        }
+
         Log.d(TAG, "onMove: BoardView src: " + srcPos + " BoardView dst: " + dstPos);
 
-        _view.movePiece(srcPos, dstPos);
     }
 
     /**
