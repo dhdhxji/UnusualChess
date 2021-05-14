@@ -10,4 +10,6 @@
     <string name="lbl_activity_new_game_settings_difficulty_clr_white">White</string>
     <string name="lbl_activity_new_game_settings_difficulty_clr_black">Black</string>
     <string name="lbl_new_game_settings_start_btn">Start</string>
+    <string name="white_move_title">White player move</string>
+    <string name="black_move_title">Black player move</string>
 </resources>

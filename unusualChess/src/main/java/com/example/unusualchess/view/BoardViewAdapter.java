@@ -22,7 +22,7 @@ import java.util.Set;
 /**
  * This is a helper class to handle all UI logic for ChessBattleActivity
  */
-public class ChessBattleUI implements ChessModelListener<Piece>, BoardView.BoardListener {
+public class BoardViewAdapter implements ChessModelListener<Piece>, BoardView.BoardListener {
     public static final String TAG = "ChessBattleUI";
 
     public static final EnumMap<Role, EnumMap<Piece.Type, Integer>> pieceSprites = genSpriteTable();
@@ -71,7 +71,7 @@ public class ChessBattleUI implements ChessModelListener<Piece>, BoardView.Board
         return new CellIndex( p.getJ(), ChessModel.BOARD_WIDTH - 1 - p.getI());
     }
 
-    public ChessBattleUI(Activity parent, ChessModel model, BoardListener l) {
+    public BoardViewAdapter(Activity parent, ChessModel model, BoardListener l) {
         _view = parent.findViewById(R.id.battle_menu_board);
         model.addListener(this);
 
