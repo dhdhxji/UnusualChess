@@ -60,8 +60,10 @@ public class ChessBattleActivity extends AppCompatActivity
         Log.d(TAG, "onBoardClick: " + pos + " prev pos " + _selectedPiece );
 
         if(_selectedPiece == null) {
-            _selectedPiece = pos;
-            _ui.highlightTiles(_model.getAvailableMoves(pos));
+            if(_model.getCurrentPlayer().equals(_model.getCurrentState().get(pos).getRole())) {
+                _selectedPiece = pos;
+                _ui.highlightTiles(_model.getAvailableMoves(pos));
+            }
         } else if (_selectedPiece.equals(pos)) {
             _selectedPiece = null;
             _ui.unmarkTiles();
@@ -79,7 +81,7 @@ public class ChessBattleActivity extends AppCompatActivity
                 try {
                     _model.move(m);
                 } catch (Exception e) {
-                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG);
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
                 }
 
                 _selectedPiece = null;
