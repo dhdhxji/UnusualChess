@@ -314,6 +314,10 @@ public class ChessModel extends ChessModelListenerSupport<Piece> {
         return Situation.PROGRESS;
     }
 
+    public Role getCurrentPlayer() {
+        return _currentPlayer;
+    }
+
 
 
     @NonNull

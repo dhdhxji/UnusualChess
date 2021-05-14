@@ -516,13 +516,18 @@ public class BoardView extends GridLayout {
 
     public void movePiece(Pos startPos, Pos endPos){
         View view = piecesMatrix[startPos.getI()][startPos.getJ()];
+        View otherPiece = piecesMatrix[endPos.getI()][endPos.getJ()];
 
         piecesMatrix[endPos.getI()][endPos.getJ()] = piecesMatrix[startPos.getI()][startPos.getJ()];
         piecesMatrix[startPos.getI()][startPos.getJ()] = null;
 
-        View casa = getChildAt((endPos.getI()*BOARD_DIMENSION) + endPos.getJ());
+        View tile = getChildAt((endPos.getI()*BOARD_DIMENSION) + endPos.getJ());
 
-        pieceMovAnim(view, casa);
+        if(otherPiece != null) {
+            otherPiece.setVisibility(GONE);
+        }
+
+        pieceMovAnim(view, tile);
     }
 
     public void movePiece(List<Pos> positions){
