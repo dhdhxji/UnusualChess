@@ -27,10 +27,9 @@
         app:layout_constraintTop_toBottomOf="@+id/battle_menu_board" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/current_player_move"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Your/opponents`s move"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -45,7 +44,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        app:layout_constraintTop_toBottomOf="@+id/current_player_move"
         app:lightTileImage="@drawable/white_cell"
         app:markedTileColor="@color/clr_marked_tile_color"
         app:tileMarkingAnimation="SimpleFading"

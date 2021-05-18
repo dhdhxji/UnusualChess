@@ -20,6 +20,7 @@ import com.example.unusualchess.chessModel.common.ChessMoveEvent;
 import com.example.unusualchess.chessModel.common.exception.InvalidCellIndexException;
 import com.example.unusualchess.chessModel.common.exception.InvalidPlayerException;
 import com.example.unusualchess.chessModel.common.MoveHistory;
+import com.example.unusualchess.chessModel.common.exception.NoPieceException;
 import com.example.unusualchess.chessModel.common.exception.TransformationNotAllowedException;
 
 import java.util.HashSet;
@@ -51,12 +52,14 @@ public class ChessModel extends ChessModelListenerSupport<Piece> {
      * @throws InvalidCellIndexException if src or dst is incorrect cell index
      * @throws InvalidPlayerException if it's not this player's
      * @throws TransformationNotAllowedException if selected transformation not acceptable
+     * @throws NoPieceException if there is no piece in src position
      */
     public void move(MoveIntent m)
             throws ChessInvalidMoveException,
             InvalidCellIndexException,
             InvalidPlayerException,
-            TransformationNotAllowedException {
+            TransformationNotAllowedException,
+            NoPieceException{
         //Check is move possible
         if(m.getRole() != _currentPlayer) {
             throw new InvalidPlayerException("Now is " + _currentPlayer + " players`s turn");
@@ -68,6 +71,15 @@ public class ChessModel extends ChessModelListenerSupport<Piece> {
 
         if( !isCellIndexValid(m.getDst())) {
             throw new InvalidCellIndexException(m.getDst());
+        }
+
+        if( _currentBoardState.get(m.getSrc()).getRole() != m.getRole()) {
+            throw new InvalidPlayerException("The " + m.getRole() + " can not move a " +
+                    _currentBoardState.get(m.getSrc()).getRole() + " piece");
+        }
+
+        if( _currentBoardState.get(m.getSrc()) == null) {
+            throw new NoPieceException(m.getSrc());
         }
 
         Set<CellIndex> availableMoves = getAvailableMoves(m.getSrc());
@@ -312,6 +324,10 @@ public class ChessModel extends ChessModelListenerSupport<Piece> {
         }
 
         return Situation.PROGRESS;
+    }
+
+    public Role getCurrentPlayer() {
+        return _currentPlayer;
     }
 
 
