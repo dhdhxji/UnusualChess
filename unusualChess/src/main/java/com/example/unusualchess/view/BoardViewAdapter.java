@@ -8,6 +8,7 @@ import com.example.unusualchess.chessModel.board.BoardHolder;
 import com.example.unusualchess.chessModel.board.CellIndex;
 import com.example.unusualchess.chessModel.ChessModel;
 import com.example.unusualchess.chessModel.board.Piece;
+import com.example.unusualchess.chessModel.board.pieces.EmptyPiece;
 import com.example.unusualchess.chessModel.common.Role;
 import com.example.unusualchess.util.BoardListener;
 import com.example.unusualchess.chessModel.common.ChessModelListener;
@@ -23,7 +24,7 @@ import java.util.Set;
  * This is a helper class to handle all UI logic for ChessBattleActivity
  */
 public class BoardViewAdapter implements ChessModelListener<Piece>, BoardView.BoardListener {
-    public static final String TAG = "ChessBattleUI";
+    public static final String TAG = "BoardViewAdapter";
 
     public static final EnumMap<Role, EnumMap<Piece.Type, Integer>> pieceSprites = genSpriteTable();
 
@@ -60,6 +61,9 @@ public class BoardViewAdapter implements ChessModelListener<Piece>, BoardView.Bo
 
     @SuppressWarnings("ConstantConditions")
     public static int getSpriteId(Piece p) {
+        if(p == null || p.getClass() == EmptyPiece.class) {
+            return R.drawable.transparrent;
+        }
         return pieceSprites.get(p.getRole()).get(p.getType());
     }
 
@@ -78,6 +82,7 @@ public class BoardViewAdapter implements ChessModelListener<Piece>, BoardView.Bo
         _clickListener = l;
         _view.setBoardListener(this);
 
+        _model = model;
 
         updateUI(model.getCurrentState());
     }
@@ -92,22 +97,21 @@ public class BoardViewAdapter implements ChessModelListener<Piece>, BoardView.Bo
                 Piece p = board.get(new CellIndex(file, rank));
                 BoardView.Pos pos = fromCellIndex(new CellIndex(file, rank));
 
+                try {
+                    _view.removePiece(
+                            pos.getI(),
+                            pos.getJ()
+                    );
+                } catch (NullPointerException e) {
+                    //Do nothing
+                }
+
                 if(p != null) {
                     int spriteId = getSpriteId(p);
                     _view.setPiece(
                             pos.getI(),
                             pos.getJ()
                             , spriteId);
-                } else {
-                    try {
-                        _view.removePiece(
-                                pos.getI(),
-                                pos.getJ()
-                        );
-                    } catch (NullPointerException e) {
-                        Log.d(TAG, "updateUI: nothing to remove in pos: " +
-                                new CellIndex(file, rank));
-                    }
                 }
             }
         }
@@ -137,7 +141,20 @@ public class BoardViewAdapter implements ChessModelListener<Piece>, BoardView.Bo
      */
     @Override
     public void onMove(ChessMoveEvent<Piece> ev) {
-        Log.d(TAG, "onMove: move from " + ev.getSrc() + " to " + ev.getDst());
+        if(ev.getSeqNumber() !=  nextSeqNum) {
+            //Displayed state broken, reconstruct the whole game
+            Log.w(TAG, "onMove: game state wa broken!");
+            nextSeqNum = ev.getSeqNumber();
+
+            updateUI(_model.getInitialBoardSetup());
+            for(ChessMoveEvent<Piece> cev:
+                    _model.getMoveHistory().getShortHistory(ev.getSeqNumber()-1)) {
+                onMove(cev);
+            }
+
+            return;
+        }
+
         BoardView.Pos srcPos = fromCellIndex(ev.getSrc());
         BoardView.Pos dstPos = fromCellIndex(ev.getDst());
 
@@ -150,8 +167,7 @@ public class BoardViewAdapter implements ChessModelListener<Piece>, BoardView.Bo
             _view.setPiece(dstPos.getI(), dstPos.getJ(), getSpriteId(ev.getTransformTo()));
         }
 
-        Log.d(TAG, "onMove: BoardView src: " + srcPos + " BoardView dst: " + dstPos);
-
+        nextSeqNum += 1;
     }
 
     /**
@@ -166,16 +182,16 @@ public class BoardViewAdapter implements ChessModelListener<Piece>, BoardView.Bo
 
     /**
      * This callback will be called when user move piece
-     * @param posPiece
-     * @param posTile
+     * @param posPiece position of previously clicked piece
+     * @param posTile current click position
      */
     @Override
     public void onClickTile(BoardView.Pos posPiece, BoardView.Pos posTile) {
         _clickListener.onBoardClick(fromPos(posTile));
     }
 
-    private BoardView.Pos _selectedPiece = null;
     private final BoardView _view;
     private BoardListener _clickListener;
-
+    private int nextSeqNum = 0;
+    private ChessModel _model;
 }

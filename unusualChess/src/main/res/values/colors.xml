@@ -18,4 +18,7 @@
     <color name="clr_chess_battle_history_content">#F2F2F2</color>
     <color name="clr_invalid_board_tap">#FF1010</color>
     <color name="clr_marked_tile_color">#50AA50</color>
+    <color name="main_menu_blur_color">#000000ff</color>
+    <color name="main_menu_background">#000000</color>
+    <color name="title_color">#ffffffff</color>
 </resources>

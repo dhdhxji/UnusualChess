@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="main_menu_board_rot_angle">-20</dimen>
+    <dimen name="main_menu_title_top_offset">128dp</dimen>
+    <dimen name="main_menu_board_margin">-50dp</dimen>
+</resources>
