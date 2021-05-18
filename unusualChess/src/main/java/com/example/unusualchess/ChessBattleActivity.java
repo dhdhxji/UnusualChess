@@ -40,7 +40,7 @@ public class ChessBattleActivity extends AppCompatActivity
         _switchBtn = findViewById(R.id.button3);
         _switchBtn.setOnClickListener(this);
 
-        _ui = new BoardViewAdapter(this, _model, this);
+        _ui = new BoardViewAdapter(R.id.battle_menu_board, this, _model, this);
 
         _currentMove = findViewById(R.id.current_player_move);
         updateCurrentPlayer();

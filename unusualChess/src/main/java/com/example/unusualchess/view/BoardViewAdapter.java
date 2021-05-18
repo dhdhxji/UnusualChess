@@ -71,8 +71,8 @@ public class BoardViewAdapter implements ChessModelListener<Piece>, BoardView.Bo
         return new CellIndex( p.getJ(), ChessModel.BOARD_WIDTH - 1 - p.getI());
     }
 
-    public BoardViewAdapter(Activity parent, ChessModel model, BoardListener l) {
-        _view = parent.findViewById(R.id.battle_menu_board);
+    public BoardViewAdapter(int viewId, Activity parent, ChessModel model, BoardListener l) {
+        _view = parent.findViewById(viewId);
         model.addListener(this);
 
         _clickListener = l;
