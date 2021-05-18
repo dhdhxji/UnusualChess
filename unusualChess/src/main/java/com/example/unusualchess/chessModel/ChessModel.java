@@ -167,6 +167,8 @@ public class ChessModel extends ChessModelListenerSupport<Piece> {
         _currentBoardState = getInitialBoardSetup();
         _moveHistory = new MoveHistory();
         _beatenPiece.clear();
+
+        _currentPlayer = Role.WHITE;
     }
 
     public BoardHolder<Piece> getInitialBoardSetup() {

@@ -1,27 +1,24 @@
 package com.example.unusualchess;
 
-import android.annotation.SuppressLint;
-
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 
 import com.example.unusualchess.arbiter.ai.ChessAi;
 import com.example.unusualchess.arbiter.ai.RandomMoves;
 import com.example.unusualchess.chessModel.ChessModel;
 import com.example.unusualchess.chessModel.board.CellIndex;
+import com.example.unusualchess.chessModel.common.MoveIntent;
 import com.example.unusualchess.chessModel.common.Role;
 import com.example.unusualchess.util.BoardListener;
 import com.example.unusualchess.view.BoardViewAdapter;
+
+import java.util.Objects;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -34,7 +31,7 @@ public class MainMenuActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         //Disable title bar
-        getSupportActionBar().hide();
+        Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.main_menu_activity);
 
         Button play_button = findViewById(R.id.main_activity_startGame_btn);
@@ -80,7 +77,7 @@ public class MainMenuActivity extends AppCompatActivity
 
 class PlayWorker {
     public static String TAG = "PlayWorker";
-    public static final int MOVE_PERIOD_MS = 1000;
+    public static final int MOVE_PERIOD_MS = 200;
 
     public PlayWorker(ChessModel m, ChessAi wh, ChessAi bl) {
         _model = m;
@@ -88,20 +85,35 @@ class PlayWorker {
 
         _whiteAi = wh;
         _blackAi = bl;
-        _work = new Runnable() {
-            @Override
-            public void run() {
-                makeMove();
-                if(_started) {
-                    start();
-                }
+        _work = () -> {
+            makeMove();
+            if(_started) {
+                start();
             }
         };
     }
 
     public void makeMove() {
-        //TODO
-        Log.d(TAG, "makeMove: " + "move");
+        ChessAi current = (_model.getCurrentPlayer() == Role.WHITE) ? _whiteAi : _blackAi;
+        ChessAi enemy = (current == _whiteAi) ? _blackAi : _whiteAi;
+
+
+        MoveIntent currentMove = current.getNextMove();
+        try {
+            ChessModel.Situation currentSit = _model.getCurrentSituation();
+            if(currentSit == ChessModel.Situation.PAT ||
+                    currentSit == ChessModel.Situation.CHECKMATE ||
+                    _model.getMoveHistory().getHistory(-1).size() > 100) {
+                //Game gone
+                _model.reset();
+                return;
+            }
+
+            _model.move(currentMove);
+            enemy.movePerformed(currentMove);
+        } catch (Exception e) {
+            Log.e(TAG, "makeMove: " + e.getMessage());
+        }
     }
 
     public void start() {
@@ -113,10 +125,10 @@ class PlayWorker {
         _started = false;
     }
 
-    private ChessModel _model;
-    private ChessAi _whiteAi;
-    private ChessAi _blackAi;
-    private Handler _workerHandler;
-    private Runnable _work;
+    private final ChessModel _model;
+    private final ChessAi _whiteAi;
+    private final ChessAi _blackAi;
+    private final Handler _workerHandler;
+    private final Runnable _work;
     private boolean _started = false;
 }
