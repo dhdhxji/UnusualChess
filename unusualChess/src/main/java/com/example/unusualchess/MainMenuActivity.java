@@ -3,10 +3,12 @@ package com.example.unusualchess;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.unusualchess.arbiter.ai.ChessAi;
@@ -19,6 +21,9 @@ import com.example.unusualchess.util.BoardListener;
 import com.example.unusualchess.view.BoardViewAdapter;
 
 import java.util.Objects;
+
+import eightbitlab.com.blurview.BlurView;
+import eightbitlab.com.blurview.RenderScriptBlur;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -34,6 +39,8 @@ public class MainMenuActivity extends AppCompatActivity
         Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.main_menu_activity);
 
+
+        //Setup controls
         Button play_button = findViewById(R.id.main_activity_startGame_btn);
         play_button.setOnClickListener(this);
 
@@ -46,6 +53,20 @@ public class MainMenuActivity extends AppCompatActivity
         new BoardViewAdapter(R.id.main_menu_board, this, model, this);
 
         _w = new PlayWorker(model, wai, bai);
+
+        //Setup blur
+        ViewGroup rootView = findViewById(R.id.main_root);
+        Drawable windowBackground = getWindow().getDecorView().getBackground();
+
+        BlurView blurView = findViewById(R.id.main_menu_blur);
+
+        blurView.setupWith(rootView)
+                .setFrameClearDrawable(windowBackground)
+                .setBlurAlgorithm(new RenderScriptBlur(this))
+                .setBlurRadius(7.f)
+                .setBlurAutoUpdate(true)
+                .setHasFixedTransformationMatrix(false);
+
     }
 
     @Override
@@ -77,7 +98,7 @@ public class MainMenuActivity extends AppCompatActivity
 
 class PlayWorker {
     public static String TAG = "PlayWorker";
-    public static final int MOVE_PERIOD_MS = 200;
+    public static final int MOVE_PERIOD_MS = 400;
 
     public PlayWorker(ChessModel m, ChessAi wh, ChessAi bl) {
         _model = m;

@@ -45,6 +45,10 @@ public class RandomMoves implements ChessAi{
     }
 
     private static <T> T getRandomSetElement(Set<T> set) {
+        if(set.size() == 0 ) {
+            return null;
+        }
+
         int size = set.size();
         int item = new Random().nextInt(size);
 
